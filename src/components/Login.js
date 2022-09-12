@@ -1,22 +1,43 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import UserContext from "./UserContext";
+import axios from "axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const navigate = useNavigate();
 
+  const { setToken } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
+
   const body = {
     email: email,
     password: senha,
   };
 
+  function handleForm(event) {
+    event.preventDefault();
+
+    axios
+      .post("http://localhost:5000/sign-in", body)
+      .then((resposta) => {
+        console.log("é o token?", resposta);
+        setToken(resposta.data.token);
+        setUser(resposta.data.user);
+        navigate("/tela01");
+      })
+      .catch((error) => {
+        alert(error.response.data.error);
+      });
+  }
+
   return (
     <>
       <Container>
         <Titulo>My Wallet</Titulo>
-        <form /* onSubmit={handleForm} */>
+        <form onSubmit={handleForm}>
           <div>
             <Input
               placeholder="E-mail"

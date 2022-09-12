@@ -1,20 +1,52 @@
 import { TxtTopo } from "./Tela01";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useContext } from "react";
+import UserContext from "./UserContext";
 
 import styled from "styled-components";
+
 export default function NovaSaida() {
+  const { token } = useContext(UserContext);
+  const [value, setValue] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const config = { headers: { Authorization: `Bearer ${token}` } };
+
+  const navigate = useNavigate();
+
+  function handleForm(event) {
+    event.preventDefault();
+
+    const body = {
+      value: value,
+      descricao: descricao,
+    };
+
+    axios
+      .post("http://localhost:5000/newout", body, config)
+      .then((resposta) => {
+        setDescricao(resposta.data);
+        navigate("/tela01");
+      })
+      .catch((erro) => {
+        alert(erro.response.data.error);
+      });
+  }
+
   return (
     <>
       <Container>
         <Topo>
-          <TxtTopo>Nova saída</TxtTopo>
+          <TxtTopo>Nova entrada</TxtTopo>
         </Topo>
-        <form /* onSubmit={handleForm} */>
+        <form onSubmit={handleForm}>
           <div>
             <Input
               placeholder="Valor"
-              type="email"
-              // value={email}
-              //onChange={(event) => setEmail(event.target.value)}
+              type="number"
+              value={value}
+              onChange={(event) => setValue(event.target.value)}
               required
             ></Input>
           </div>
@@ -22,14 +54,14 @@ export default function NovaSaida() {
           <div>
             <Input
               placeholder="Descrição"
-              type="password"
-              //value={senha}
-              //onChange={(event) => setSenha(event.target.value)}
+              type="text"
+              value={descricao}
+              onChange={(event) => setDescricao(event.target.value)}
               required
             ></Input>
           </div>
 
-          <Button type="submit">Salvar saída</Button>
+          <Button type="submit">Salvar entrada</Button>
         </form>
       </Container>
     </>

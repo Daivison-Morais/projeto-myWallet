@@ -1,13 +1,14 @@
 import axios from "axios";
 import { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 
 import { Container, Input, TxtCadastro, Button } from "./Login";
 
 export default function Cadastro() {
   const [email, setEmail] = useState("");
-  const [name, setNome] = useState("");
-  const [foto, setFoto] = useState("");
+  const [name, setName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [password, setSenha] = useState("");
 
   const navigate = useNavigate();
@@ -18,17 +19,17 @@ export default function Cadastro() {
     const body = {
       name: name,
       email: email,
-      foto: foto,
+      confirmPassword: confirmPassword,
       password: password,
     };
 
     axios
-      .post("http://localhost:5000", body)
+      .post("http://localhost:5000/sign-up", body)
       .then((resposta) => {
         alert("Cadastro realizado!");
       })
-      .catch((erro) => {
-        alert("Algo deu errado");
+      .catch((error) => {
+        alert(error.response.data.error);
       });
   }
 
@@ -45,6 +46,17 @@ export default function Cadastro() {
               required
             ></Input>
           </div>
+
+          <div>
+            <Input
+              placeholder="Nome"
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              required
+            ></Input>
+          </div>
+
           <div>
             <Input
               placeholder="Senha"
@@ -54,26 +66,18 @@ export default function Cadastro() {
               required
             ></Input>
           </div>
+
           <div>
             <Input
-              placeholder="Nome"
-              type="text"
-              value={name}
-              onChange={(event) => setNome(event.target.value)}
-              required
-            ></Input>
-          </div>
-          <div>
-            <Input
-              placeholder="Foto"
-              type="url"
-              value={foto}
-              onChange={(event) => setFoto(event.target.value)}
+              placeholder="Confirme a senha"
+              type="password"
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
               required
             ></Input>
           </div>
           <Button type="submit">Cadastrar</Button>
-          <TxtCadastro onClick={() => navigate("/sign-in")}>
+          <TxtCadastro onClick={() => navigate("/")}>
             Já tem uma conta? Entre agora!
           </TxtCadastro>
         </form>

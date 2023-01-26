@@ -138,7 +138,7 @@ export const TxtBotao = styled.h2`
 `;
 
 export const Img = styled.img`
-  width: 22%;
+  width: 18%;
 `;
 
 export const TxtTopo = styled.h1`

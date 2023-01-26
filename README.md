@@ -28,8 +28,8 @@ E agora podemos conectar ao servidor usando o próprio mongo:
 
 #### ` mongo ` 
 
- Por fim:
-#### ` rode: node index.js ` 
+ Por fim, rode:
+#### `node index.js ` 
 
         
         

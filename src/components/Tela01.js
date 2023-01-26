@@ -18,7 +18,9 @@ export default function Tela01() {
       setInOut(resp.data);
     });
   }, []);
-
+  inOut.reverse();
+  let resultValue = 0;
+  inOut.map((saldo) => (resultValue = resultValue + Number(saldo.value)));
   return (
     <>
       <Container>
@@ -48,8 +50,10 @@ export default function Tela01() {
               <div className="txtInf">Não há registros de entrada ou saída</div>
             </div>
           )}
-          {/* <Saldo>Saldo: {}</Saldo> */}
         </Main>
+        <Saldo> Saldo: {resultValue >= 0 ? <CorVerde>{resultValue} R$</CorVerde> 
+        : <CorVermelho>{resultValue} R$</CorVermelho>
+        }</Saldo>
 
         <Footer>
           <Buttons
@@ -74,17 +78,25 @@ export default function Tela01() {
   );
 }
 
-/* export const Saldo = styled.div`
-  position: absolute;
-  
+export const Saldo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 5px;
+  height: 20px;
+  margin-top: 6px;
+  margin-bottom: 6px;
 `;
- */
+
 export const CorVerde = styled.div`
   color: green;
+  margin-left: 7px;
 `;
 
 export const CorVermelho = styled.div`
   color: red;
+  margin-left: 7px;
 `;
 
 export const BlocoAnotacao = styled.div`
@@ -106,10 +118,10 @@ export const Descricao = styled.div`
   justify-content: center;
   align-items: center;
   word-wrap: break-word;
-  word-break: break-word;
   width: 230px;
   font-size: 18px;
   font-weight: 400;
+  padding: 0 5px 0 10px;
 `;
 export const Date = styled.div`
   display: flex;
@@ -146,6 +158,7 @@ export const Main = styled.div`
   height: 67%;
   border-radius: 5px;
   padding-left: 6px;
+  padding-right: 6px;
   overflow: scroll;
   background-color: #ffffff;
 `;

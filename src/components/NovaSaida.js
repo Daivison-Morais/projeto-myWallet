@@ -19,7 +19,7 @@ export default function NovaSaida() {
     event.preventDefault();
 
     const body = {
-      value: value,
+      value: value > 0 ? value * -1 : value,
       descricao: descricao,
     };
 
@@ -38,7 +38,7 @@ export default function NovaSaida() {
     <>
       <Container>
         <Topo>
-          <TxtTopo>Nova entrada</TxtTopo>
+          <TxtTopo>Nova Saída</TxtTopo>
         </Topo>
         <form onSubmit={handleForm}>
           <div>
@@ -61,7 +61,7 @@ export default function NovaSaida() {
             ></Input>
           </div>
 
-          <Button type="submit">Salvar entrada</Button>
+          <Button type="submit">Salvar Saída</Button>
         </form>
       </Container>
     </>

@@ -69,9 +69,9 @@ app.post("/sign-up", async (req, res) => {
       email,
       password: passwordEncrypted,
     });
-    res.send(201);
+    res.sendStatus(201);
   } catch (error) {
-    console.error(error);
+    console.error("aqui");
     res.sendStatus(500);
   }
 });

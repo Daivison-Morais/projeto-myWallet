@@ -1,3 +1,8 @@
+## MyWallet
+<h4>  Este projeto fullstack é ideal para voçê controlar gastos ou orçamentos, recebendo entradas e saídas de dinheiro, registrando-os e atualiza em tempo real saldos positívos ou negativos.</h4>
+<br>
+<img src="./src/assets/img/myWallet.png"/>
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

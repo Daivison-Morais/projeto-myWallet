@@ -85,9 +85,12 @@ export const Saldo = styled.div`
   justify-content: center;
   background-color: white;
   border-radius: 5px;
+  font-size: 20px;
   height: 20px;
+  padding: 15px 5px;
   margin-top: 6px;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
+  background-color: #eff3f3;
 `;
 
 export const CorVerde = styled.div`
@@ -150,6 +153,7 @@ export const TxtTopo = styled.h1`
 
 export const Topo = styled.div`
   display: flex;
+  margin-bottom: 10px;
   justify-content: space-between;
 `;
 
@@ -161,7 +165,7 @@ export const Main = styled.div`
   padding-left: 6px;
   padding-right: 6px;
   overflow: scroll;
-  background-color: #ffffff;
+  background-color: #eff3f3;
 `;
 
 export const Footer = styled.div`

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import BASE_URL from "./services";
 
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +25,8 @@ export default function Cadastro() {
     };
 
     axios
-      .post("http://localhost:5000/sign-up", body)
+      .post(
+        `${BASE_URL}/sign-up`, body)
       .then((resposta) => {
         alert("Cadastro realizado!");
       })

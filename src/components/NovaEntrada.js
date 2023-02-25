@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useContext } from "react";
 import UserContext from "./UserContext";
-
 import styled from "styled-components";
+import BASE_URL from "./services";
 
 export default function NovaEntrada() {
   const { token } = useContext(UserContext);
@@ -24,7 +24,7 @@ export default function NovaEntrada() {
     };
     console.log(config);
     axios
-      .post("http://localhost:5000/newin", body, config)
+      .post(`${BASE_URL}/newin`, body, config)
       .then((resposta) => {
         setDescricao(resposta.data);
         navigate("/tela01");

@@ -6,6 +6,7 @@ import { useContext } from "react";
 import UserContext from "./UserContext";
 
 import styled from "styled-components";
+import BASE_URL from "./services";
 
 export default function NovaSaida() {
   const { token } = useContext(UserContext);
@@ -24,7 +25,7 @@ export default function NovaSaida() {
     };
 
     axios
-      .post("http://localhost:5000/newout", body, config)
+      .post(`${BASE_URL}/newout`, body, config)
       .then((resposta) => {
         setDescricao(resposta.data);
         navigate("/tela01");

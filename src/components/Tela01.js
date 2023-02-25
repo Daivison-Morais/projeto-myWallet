@@ -6,6 +6,7 @@ import { useContext, useState, useEffect } from "react";
 import UserContext from "./UserContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "./services";
 
 export default function Tela01() {
   const [inOut, setInOut] = useState([]);
@@ -14,7 +15,7 @@ export default function Tela01() {
   const config = { headers: { Authorization: `Bearer ${token}` } };
   const navigate = useNavigate();
   useEffect(() => {
-    axios.get("http://localhost:5000/transactions", config).then((resp) => {
+    axios.get(`${BASE_URL}/transactions`, config).then((resp) => {
       setInOut(resp.data);
     });
   }, []);

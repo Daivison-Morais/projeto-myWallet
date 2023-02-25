@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { useState, useContext } from "react";
 import UserContext from "./UserContext";
 import axios from "axios";
+import BASE_URL from "./services";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -21,7 +23,7 @@ export default function Login() {
     event.preventDefault();
 
     axios
-      .post("http://localhost:5000/sign-in", body)
+      .post(`${BASE_URL}/sign-in`, body)
       .then((resposta) => {
         console.log("é o token?", resposta);
         setToken(resposta.data.token);

@@ -4,5 +4,14 @@
 <img src="./src/assets/img/myWallet.png"/>
 
 # Para rodar:
-Deploy: https://projeto13-mywallet-front-two-gamma.vercel.app/
+
+Clone o repositório.
+
+Na raíz do projeto rode: npm run start
+
+No backend, fazer o clone do seguinte repositório https://github.com/Daivison-Morais/projeto13-mywallet-back
+
+## deploy
+
+https://projeto13-mywallet-front-two-gamma.vercel.app/
 

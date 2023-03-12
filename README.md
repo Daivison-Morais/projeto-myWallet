@@ -1,5 +1,5 @@
 ## MyWallet
-<h4>  Este projeto fullstack é ideal para voçê controlar gastos ou orçamentos, recebendo entradas e saídas de dinheiro, registrando-os e visualizando em tempo real saldos positívos ou negativos.</h4>
+<h4>  Este projeto fullstack (responsível) é ideal para voçê controlar gastos ou orçamentos, recebendo entradas e saídas de dinheiro, registrando-os e visualizando em tempo real saldos positívos ou negativos.</h4>
 <br>
 <img src="./src/assets/img/myWallet.png"/>
 

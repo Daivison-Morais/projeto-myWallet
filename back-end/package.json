@@ -1,0 +1,27 @@
+{
+  "name": "projeto13-mywallet-back",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Daivison Morais",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "joi": "^17.6.0",
+    "mongodb": "^4.9.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

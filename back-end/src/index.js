@@ -4,7 +4,7 @@ import joi from "joi";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import dayjs from "dayjs";
-import { MongoClient, ObjectId } from "mongodb";
+import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -12,10 +12,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const mongoClient = new MongoClient(process.env.MONGO_URI);
+const mongoClient = new MongoClient("mongodb://db_mongo:27017");
+
 let db;
-mongoClient.connect().then(() => {
-  db = mongoClient.db("wallet");
+mongoClient.connect().then( () => {
+  db =  mongoClient.db("wallet");
+}
+)
+.catch((error)=>{
+  console.log(error)
 });
 
 const postRegistrationSchema = joi.object({
@@ -71,7 +76,7 @@ app.post("/sign-up", async (req, res) => {
     });
     res.sendStatus(201);
   } catch (error) {
-    console.error("aqui");
+    console.error(error);
     res.sendStatus(500);
   }
 });
@@ -100,7 +105,7 @@ app.post("/sign-in", async (req, res) => {
 
     await db.collection("sessions").insertOne({
       token,
-      userId: findUser._id, //é o id do usuário
+      userId: findUser._id,
     });
 
     res.send({ token, user: findUser.name });
@@ -139,9 +144,6 @@ app.post("/newin", async (req, res) => {
       return res.sendStatus(401);
     }
 
-    //retorna o q tem em transações, o que tem la?
-    //NÃO DESCER COM A SENHA(HASHING)!!
-    //delete user.password -> não remove do banco, apenas do objeto!!
     await db.collection("transactions").insertOne({
       userId: session.userId,
       value,
@@ -177,17 +179,7 @@ app.post("/newout", async (req, res) => {
     if (!session) {
       return res.sendStatus(401);
     }
-
-    /* const user = await db.collection("users").findOne({
-      _id: session.userId,
-    });
-    if (!user) {
-      return res.send(401);
-    } */
-
-    //retorna o q tem em transações, o que tem la?
-    //NÃO DESCER COM A SENHA(HASHING)!!
-    //delete user.password -> não remove do banco, apenas do objeto!!
+    
     await db.collection("transactions").insertOne({
       userId: session.userId,
       value,
@@ -214,7 +206,6 @@ app.get("/transactions", async (req, res) => {
     if (!session) {
       return res.sendStatus(401);
     }
-    console.log(session);
 
     const userTransactions = await db
       .collection("transactions")

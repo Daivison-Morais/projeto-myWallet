@@ -25,7 +25,6 @@ export default function Login() {
     axios
       .post(`${BASE_URL}/sign-in`, body)
       .then((resposta) => {
-        console.log("é o token?", resposta);
         setToken(resposta.data.token);
         setUser(resposta.data.user);
         navigate("/tela01");

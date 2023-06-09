@@ -1,19 +1,16 @@
-version: '3.1'
+version: '3.2'
 
 services:
-  
-  mongo:
-    image: mongo
-    container_name: mongo-teste
+  db_mongo:
+    image: mongo:4.2
+    container_name: db_mongo
     restart: always
     ports:
-      - 27017:27017
+     - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-
+      MONGO_INIT_DATABASE: wallet
     volumes:
-      - mongo-volume:/var/lib/mongo/data
+      - db_mongo-volume:/var/lib/mongo/data
 
   node:
     container_name: node
@@ -22,7 +19,7 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      - mongo
+      - db_mongo
     env_file:
       - back-end/.env
   
@@ -41,10 +38,10 @@ services:
     volumes:
       - react-volume:/var/www/html
     depends_on:
-      - mongo
+      - db_mongo
       - node
       - react
 
 volumes:
-  mongo-volume:
+  db_mongo-volume:
   react-volume:

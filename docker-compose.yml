@@ -22,6 +22,8 @@ services:
       - db_mongo
     env_file:
       - back-end/.env
+    volumes:
+      - ./back-end:/src/usr
   
   react:
     container_name: react

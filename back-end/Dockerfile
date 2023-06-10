@@ -1,11 +1,9 @@
 FROM node
 
-WORKDIR /src/usr/
+WORKDIR /src/usr
 
-COPY . .
+RUN npm i -g nodemon
 
 EXPOSE 5000
 
-RUN npm i
-
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

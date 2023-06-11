@@ -22,15 +22,14 @@ export default function NovaEntrada() {
       value: value,
       descricao: descricao,
     };
-    console.log(config);
     axios
       .post(`${BASE_URL}/newin`, body, config)
       .then((resposta) => {
         setDescricao(resposta.data);
         navigate("/tela01");
       })
-      .catch((erro) => {
-        alert(erro.response.data);
+      .catch((error) => {
+        alert(error.response.data);
       });
   }
 

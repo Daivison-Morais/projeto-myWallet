@@ -13,6 +13,6 @@ export async function controllerCreateSignUp(req, res) {
     }
 
     console.error(error.error);
-    res.sendStatus(500);
+    return res.sendStatus(500);
   }
 }

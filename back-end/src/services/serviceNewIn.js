@@ -7,17 +7,11 @@ import {
 } from "../repository/repositoryNewIn.js";
 import { schemaTransactions } from "../schemas/allSchemas.js";
 
-export async function serviceNewIn(body, authorization) {
-
-  const token = authorization?.replace("Bearer ", "");
-  if (!token) {
-    throw unauthorizedError();
-  }
-
-  const validation = schemaTransactions.validate(body, { abortEarly: false });
+export async function serviceNewIn(body, token) {
+  const validation = schemaTransactions.validate(body, { abortEarly: true });  
 
   if (validation.error) {
-    const errors = validation.error.details.map((value) => value.message);
+    const errors = validation.error.details?.map((value) => value.message);
     throw conflictError(errors);
   }
 
@@ -31,5 +25,5 @@ export async function serviceNewIn(body, authorization) {
     throw unauthorizedError();
   }
 
-  return await createTransaction(session.userId, body);
+  await createTransaction(session.userId, body);
 }

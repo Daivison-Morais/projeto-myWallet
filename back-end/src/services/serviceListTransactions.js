@@ -6,14 +6,11 @@ export async function serviceListTransactions(authorization) {
   const token = authorization?.replace("Bearer ", "");
 
   if (!token) {
-
     throw unauthorizedError();
   }
 
   const session = await findSession(token);
   if (!session) {
-console.log(session)
-
     throw unauthorizedError();
   }
   const transactions = await listTransactions(session.userId);

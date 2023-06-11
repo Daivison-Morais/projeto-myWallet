@@ -34,9 +34,9 @@ export default function Tela01() {
         <Main>
           {inOut.length !== 0 ? (
             inOut.map((value) => (
-              <BlocoAnotacao>
+              <BlocoAnotation>
                 <Date>{value.date}</Date>
-                <Descricao>{value.descricao}</Descricao>
+                <Description>{value.descricao}</Description>
                 <Value>
                   {value.in === "true" ? (
                     <CorVerde>{value.value}</CorVerde>
@@ -44,7 +44,7 @@ export default function Tela01() {
                     <CorVermelho>{value.value}</CorVermelho>
                   )}
                 </Value>
-              </BlocoAnotacao>
+              </BlocoAnotation>
             ))
           ) : (
             <div className="centraliza">
@@ -103,37 +103,42 @@ export const CorVermelho = styled.div`
   margin-left: 7px;
 `;
 
-export const BlocoAnotacao = styled.div`
+export const BlocoAnotation = styled.div`
   display: flex;
   min-height: 45px;
-  justify-content: space-around;
+  justify-content: space-between;
   word-wrap: break-word;
+`;
+
+export const Date = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 15%;
+  font-size: 18px;
+  font-weight: 400;
 `;
 
 export const Value = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 20%;
   font-size: 18px;
+  text-align: center;
   font-weight: 400;
 `;
-export const Descricao = styled.div`
+export const Description = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   word-wrap: break-word;
-  width: 230px;
+  width: 50%;
   font-size: 18px;
   font-weight: 400;
   padding: 0 5px 0 10px;
 `;
-export const Date = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
-  font-weight: 400;
-`;
+
 
 export const TxtBotao = styled.h2`
   font-size: 17px;
@@ -180,6 +185,7 @@ export const Buttons = styled.div`
   width: 43vw;
   height: 20vh;
   padding-left: 10px;
+  cursor: pointer;
   background-color: #a328d6;
 
   border-radius: 5px;

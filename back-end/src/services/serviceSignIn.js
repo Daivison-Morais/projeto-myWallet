@@ -11,8 +11,8 @@ export async function serviceSignIn (body){
     const validation = postSigninSchema.validate(body, { abortEarly: false });
   
     if (validation.error) {
-      const erros = validation.error.details.map((value) => value.message);
-      return res.status(442).send(erros);
+      const errors = validation.error.details.map((value) => value.message);
+      throw conflictError(errors);
     }
 
     const ExistsUser = await findEmail(body.email);

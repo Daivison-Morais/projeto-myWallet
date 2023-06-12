@@ -134,6 +134,7 @@ export const Description = styled.div`
   align-items: center;
   word-wrap: break-word;
   width: 50%;
+  text-align: center;
   font-size: 18px;
   font-weight: 400;
   padding: 0 5px 0 10px;

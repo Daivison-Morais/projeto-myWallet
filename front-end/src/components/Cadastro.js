@@ -29,6 +29,7 @@ export default function Cadastro() {
         `${BASE_URL}/sign-up`, body)
       .then((resposta) => {
         alert("Cadastro realizado!");
+        navigate("/");
       })
       .catch((error) => {
         alert(error.response.data.error);

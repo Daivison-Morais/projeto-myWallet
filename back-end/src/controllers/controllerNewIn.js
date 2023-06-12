@@ -6,7 +6,7 @@ export async function controllerNewIn(req, res) {
 
   try {
     await serviceNewIn(body, authorization);
-    res.send(201);
+    res.sendStatus(201);
   } catch (error) {
     if (error.name === "UnauthorizedError") {
       return res.status(401).send({ error: error.message });

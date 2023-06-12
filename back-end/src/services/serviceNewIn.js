@@ -7,11 +7,17 @@ import {
 } from "../repository/repositoryNewIn.js";
 import { schemaTransactions } from "../schemas/allSchemas.js";
 
-export async function serviceNewIn(body, token) {
-  const validation = schemaTransactions.validate(body, { abortEarly: true });  
+export async function serviceNewIn(body, authorization) {
+
+  const token = authorization?.replace("Bearer ", "");
+  if (!token) {
+    throw unauthorizedError();
+  }
+
+  const validation = schemaTransactions.validate(body, { abortEarly: false });
 
   if (validation.error) {
-    const errors = validation.error.details?.map((value) => value.message);
+    const errors = validation.error.details.map((value) => value.message);
     throw conflictError(errors);
   }
 

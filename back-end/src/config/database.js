@@ -1,7 +1,10 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { MongoClient } from "mongodb";
 
 let db;
-const mongoClient = new MongoClient("mongodb://db_mongo:27017");
+const mongoClient = new MongoClient(process.env.MONGO_URI);
 
 try {
   mongoClient.connect();

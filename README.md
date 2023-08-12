@@ -7,6 +7,8 @@
 
 Clone o repositório.
 
+no arquivo back-end, crie um arquivo .env como descrito no arquivo .env.example
+
 Na raíz do projeto rode: docker compose up -d
 
 Abra o front-end copiando na barra de endereços do navegador: localhost:8081

@@ -9,6 +9,9 @@ import routerListTransactions from "./routers/routerListTransactions.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.get("/status", (req,res)=>{
+return res.send("ok")
+})
 app.use("/sign-up", routerCreateSignUp)
 app.use("/sign-in", routerSigIn)
 app.use("/newin", routerNewIn)

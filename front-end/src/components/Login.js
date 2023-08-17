@@ -9,6 +9,7 @@ import BASE_URL from "./services";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [disabledButton, setDisabledButton] = useState(false);
   const navigate = useNavigate();
 
   const { setToken } = useContext(UserContext);
@@ -22,15 +23,20 @@ export default function Login() {
   function handleForm(event) {
     event.preventDefault();
 
+    setDisabledButton(true);
+
     axios
       .post(`${BASE_URL}/sign-in`, body)
       .then((resposta) => {
         setToken(resposta.data.token);
         setUser(resposta.data.user);
+        setDisabledButton(false);
         navigate("/tela01");
       })
       .catch((error) => {
         alert(error.response.data.error);
+        setDisabledButton(false);
+        console.log(error.response.data)
       });
   }
 
@@ -59,7 +65,7 @@ export default function Login() {
             ></Input>
           </div>
 
-          <Button type="submit">Entrar</Button>
+          <Button disabled={disabledButton} type="submit">Entrar</Button>
         </form>
         <TxtCadastro onClick={() => navigate("/cadastro")}>
           Primeira vez? Cadastre-se!
@@ -101,7 +107,7 @@ export const Button = styled.button`
   font-weight: 700;
   color: #ffffff;
   box-sizing: border-box;
-  cursor: pointer;
+  cursor: ${({disabled})=> disabled ? "not-allowed" : "pointer"};
   border-style: hidden;
 `;
 

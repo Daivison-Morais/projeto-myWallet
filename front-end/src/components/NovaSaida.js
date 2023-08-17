@@ -12,12 +12,21 @@ export default function NovaSaida() {
   const { token } = useContext(UserContext);
   const [value, setValue] = useState("");
   const [descricao, setDescricao] = useState("");
+  const [disabledButton, setDisabledButton] = useState(false);
+
   const config = { headers: { Authorization: `Bearer ${token}` } };
 
   const navigate = useNavigate();
-
+ 
   function handleForm(event) {
     event.preventDefault();
+
+    if(!token){
+      alert("Você precisa estar logado para criar uma saída");
+      return navigate("/");
+    }
+
+    setDisabledButton(true);
 
     const body = {
       value: value > 0 ? value * -1 : value,
@@ -29,8 +38,10 @@ export default function NovaSaida() {
       .then((resposta) => {
         setDescricao(resposta.data);
         navigate("/tela01");
+        setDisabledButton(false)
       })
       .catch((erro) => {
+        setDisabledButton(false)
         alert(erro.response.data.error);
       });
   }
@@ -42,15 +53,6 @@ export default function NovaSaida() {
           <TxtTopo>Nova Saída</TxtTopo>
         </Topo>
         <form onSubmit={handleForm}>
-          <div>
-            <Input
-              placeholder="Valor"
-              type="number"
-              value={value}
-              onChange={(event) => setValue(event.target.value)}
-              required
-            ></Input>
-          </div>
 
           <div>
             <Input
@@ -62,7 +64,17 @@ export default function NovaSaida() {
             ></Input>
           </div>
 
-          <Button type="submit">Salvar Saída</Button>
+          <div>
+            <Input
+              placeholder="Valor"
+              type="number"
+              value={value}
+              onChange={(event) => setValue(event.target.value)}
+              required
+            ></Input>
+          </div>
+
+          <Button disabled={disabledButton} type="submit">Salvar Saída</Button>
         </form>
       </Container>
     </>

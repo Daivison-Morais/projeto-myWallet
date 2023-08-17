@@ -5,6 +5,7 @@ import routerSigIn from "./routers/routerGetSignIn.js";
 import routerNewIn from "./routers/routerNewIn.js";
 import routerNewOut from "./routers/routerNewOut.js";
 import routerListTransactions from "./routers/routerListTransactions.js";
+import { routerDelete } from "./routers/routeDeleteAll.js";
 
 const app = express();
 app.use(cors());
@@ -16,7 +17,8 @@ app.use("/sign-up", routerCreateSignUp)
 app.use("/sign-in", routerSigIn)
 app.use("/newin", routerNewIn)
 app.use("/newout", routerNewOut)
-app.use("/transactions", routerListTransactions);
+app.use("/transactions", routerListTransactions)
+app.use("/delete", routerDelete)
 
 export default app;
 

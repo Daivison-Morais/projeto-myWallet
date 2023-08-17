@@ -11,12 +11,21 @@ export default function NovaEntrada() {
   const { token } = useContext(UserContext);
   const [value, setValue] = useState("");
   const [descricao, setDescricao] = useState("");
+  const [disabledButton, setDisabledButton] = useState(false);
+
   const config = { headers: { Authorization: `Bearer ${token}` } };
 
   const navigate = useNavigate();
 
   function handleForm(event) {
     event.preventDefault();
+
+    if(!token){
+      alert("Você precisa estar logado para criar uma saída");
+      return navigate("/");
+    }
+
+    setDisabledButton(true);
 
     const body = {
       value: value,
@@ -26,9 +35,11 @@ export default function NovaEntrada() {
       .post(`${BASE_URL}/newin`, body, config)
       .then((resposta) => {
         setDescricao(resposta.data);
+        setDisabledButton(false)
         navigate("/tela01");
       })
       .catch((error) => {
+        setDisabledButton(false)
         alert(error.response.data);
       });
   }
@@ -40,16 +51,7 @@ export default function NovaEntrada() {
           <TxtTopo>Nova entrada</TxtTopo>
         </Topo>
         <form onSubmit={handleForm}>
-          <div>
-            <Input
-              placeholder="Valor"
-              type="number"
-              value={value}
-              onChange={(event) => setValue(event.target.value)}
-              required
-            ></Input>
-          </div>
-
+          
           <div>
             <Input
               placeholder="Descrição"
@@ -60,7 +62,17 @@ export default function NovaEntrada() {
             ></Input>
           </div>
 
-          <Button type="submit">Salvar entrada</Button>
+          <div>
+            <Input
+              placeholder="Valor"
+              type="number"
+              value={value}
+              onChange={(event) => setValue(event.target.value)}
+              required
+            ></Input>
+          </div>
+
+          <Button disabled={disabledButton} type="submit">Salvar entrada</Button>
         </form>
       </Container>
     </>

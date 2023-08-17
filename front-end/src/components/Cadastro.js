@@ -5,17 +5,21 @@ import BASE_URL from "./services";
 import { useNavigate } from "react-router-dom";
 
 import { Container, Input, TxtCadastro, Button } from "./Login";
+import styled from "styled-components";
 
 export default function Cadastro() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [password, setSenha] = useState("");
+  const [disabledButton, setDisabledButton] = useState(false);
 
   const navigate = useNavigate();
 
   function handleForm(event) {
     event.preventDefault();
+
+    setDisabledButton(true)
 
     const body = {
       name: name,
@@ -29,9 +33,11 @@ export default function Cadastro() {
         `${BASE_URL}/sign-up`, body)
       .then((resposta) => {
         alert("Cadastro realizado!");
+        setDisabledButton(false)
         navigate("/");
       })
       .catch((error) => {
+        setDisabledButton(false)
         alert(error.response.data.error);
       });
   }
@@ -79,7 +85,7 @@ export default function Cadastro() {
               required
             ></Input>
           </div>
-          <Button type="submit">Cadastrar</Button>
+          <Button disabled={disabledButton} type="submit">Cadastrar</Button>
           <TxtCadastro onClick={() => navigate("/")}>
             Já tem uma conta? Entre agora!
           </TxtCadastro>
@@ -88,3 +94,8 @@ export default function Cadastro() {
     </>
   );
 }
+
+export const Foto = styled(Button)`
+  cursor: ${({disabled})=> disabled ? "not-allowed" : "pointer"};
+
+`;

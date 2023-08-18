@@ -1,13 +1,14 @@
-import { TxtTopo } from "./Tela01";
+import { TxtTop } from "./MainScreen";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useContext } from "react";
 import UserContext from "./UserContext";
+
 import styled from "styled-components";
 import BASE_URL from "./services";
 
-export default function NovaEntrada() {
+export default function NewOut() {
   const { token } = useContext(UserContext);
   const [value, setValue] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -20,7 +21,7 @@ export default function NovaEntrada() {
   function handleForm(event) {
     event.preventDefault();
 
-    if(!token){
+    if (!token) {
       alert("Você precisa estar logado para criar uma saída");
       return navigate("/");
     }
@@ -28,30 +29,30 @@ export default function NovaEntrada() {
     setDisabledButton(true);
 
     const body = {
-      value: value,
+      value: value > 0 ? value * -1 : value,
       descricao: descricao,
     };
+
     axios
-      .post(`${BASE_URL}/newin`, body, config)
+      .post(`${BASE_URL}/newout`, body, config)
       .then((resposta) => {
         setDescricao(resposta.data);
-        setDisabledButton(false)
-        navigate("/tela01");
+        navigate("/mainScreen");
+        setDisabledButton(false);
       })
-      .catch((error) => {
-        setDisabledButton(false)
-        alert(error.response.data);
+      .catch((erro) => {
+        setDisabledButton(false);
+        alert(erro.response.data.error);
       });
   }
 
   return (
     <>
       <Container>
-        <Topo>
-          <TxtTopo>Nova entrada</TxtTopo>
-        </Topo>
+        <Top>
+          <TxtTop>Nova Saída</TxtTop>
+        </Top>
         <form onSubmit={handleForm}>
-          
           <div>
             <Input
               placeholder="Descrição"
@@ -72,7 +73,9 @@ export default function NovaEntrada() {
             ></Input>
           </div>
 
-          <Button disabled={disabledButton} type="submit">Salvar entrada</Button>
+          <Button disabled={disabledButton} type="submit">
+            Salvar Saída
+          </Button>
         </form>
       </Container>
     </>
@@ -103,7 +106,7 @@ export const Input = styled.input`
   border-radius: 5px;
 `;
 
-export const Topo = styled.div`
+export const Top = styled.div`
   margin-bottom: 20px;
 `;
 export const Container = styled.div`

@@ -5,7 +5,6 @@ import UserContext from "./UserContext";
 import axios from "axios";
 import BASE_URL from "./services";
 
-
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -31,12 +30,12 @@ export default function Login() {
         setToken(resposta.data.token);
         setUser(resposta.data.user);
         setDisabledButton(false);
-        navigate("/tela01");
+        navigate("/mainScreen");
       })
       .catch((error) => {
         alert(error.response.data.error);
         setDisabledButton(false);
-        console.log(error.response.data)
+        console.log(error.response.data);
       });
   }
 
@@ -65,9 +64,11 @@ export default function Login() {
             ></Input>
           </div>
 
-          <Button disabled={disabledButton} type="submit">Entrar</Button>
+          <Button disabled={disabledButton} type="submit">
+            Entrar
+          </Button>
         </form>
-        <TxtCadastro onClick={() => navigate("/cadastro")}>
+        <TxtCadastro onClick={() => navigate("/signUp")}>
           Primeira vez? Cadastre-se!
         </TxtCadastro>
       </Container>
@@ -107,7 +108,7 @@ export const Button = styled.button`
   font-weight: 700;
   color: #ffffff;
   box-sizing: border-box;
-  cursor: ${({disabled})=> disabled ? "not-allowed" : "pointer"};
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   border-style: hidden;
 `;
 

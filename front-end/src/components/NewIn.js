@@ -1,27 +1,26 @@
-import { TxtTopo } from "./Tela01";
+import { TxtTop } from "./MainScreen";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useContext } from "react";
 import UserContext from "./UserContext";
-
 import styled from "styled-components";
 import BASE_URL from "./services";
 
-export default function NovaSaida() {
+export default function NewIn() {
   const { token } = useContext(UserContext);
   const [value, setValue] = useState("");
-  const [descricao, setDescricao] = useState("");
+  const [description, setDescription] = useState("");
   const [disabledButton, setDisabledButton] = useState(false);
 
   const config = { headers: { Authorization: `Bearer ${token}` } };
 
   const navigate = useNavigate();
- 
+
   function handleForm(event) {
     event.preventDefault();
 
-    if(!token){
+    if (!token) {
       alert("Você precisa estar logado para criar uma saída");
       return navigate("/");
     }
@@ -29,37 +28,35 @@ export default function NovaSaida() {
     setDisabledButton(true);
 
     const body = {
-      value: value > 0 ? value * -1 : value,
-      descricao: descricao,
+      value: value,
+      descricao: description,
     };
-
     axios
-      .post(`${BASE_URL}/newout`, body, config)
-      .then((resposta) => {
-        setDescricao(resposta.data);
-        navigate("/tela01");
-        setDisabledButton(false)
+      .post(`${BASE_URL}/newin`, body, config)
+      .then((response) => {
+        setDescription(response.data);
+        setDisabledButton(false);
+        navigate("/mainScreen");
       })
-      .catch((erro) => {
-        setDisabledButton(false)
-        alert(erro.response.data.error);
+      .catch((error) => {
+        setDisabledButton(false);
+        alert(error.response.data);
       });
   }
 
   return (
     <>
       <Container>
-        <Topo>
-          <TxtTopo>Nova Saída</TxtTopo>
-        </Topo>
+        <Top>
+          <TxtTop>Nova entrada</TxtTop>
+        </Top>
         <form onSubmit={handleForm}>
-
           <div>
             <Input
               placeholder="Descrição"
               type="text"
-              value={descricao}
-              onChange={(event) => setDescricao(event.target.value)}
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
               required
             ></Input>
           </div>
@@ -74,7 +71,9 @@ export default function NovaSaida() {
             ></Input>
           </div>
 
-          <Button disabled={disabledButton} type="submit">Salvar Saída</Button>
+          <Button disabled={disabledButton} type="submit">
+            Salvar entrada
+          </Button>
         </form>
       </Container>
     </>
@@ -105,7 +104,7 @@ export const Input = styled.input`
   border-radius: 5px;
 `;
 
-export const Topo = styled.div`
+export const Top = styled.div`
   margin-bottom: 20px;
 `;
 export const Container = styled.div`

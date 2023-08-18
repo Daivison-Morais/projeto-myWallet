@@ -8,19 +8,18 @@ import { useNavigate } from "react-router-dom";
 import BASE_URL from "./services";
 import { RiDeleteBin2Line } from "react-icons/ri";
 
-export default function Tela01() {
+export default function MainScreen() {
   const [inOut, setInOut] = useState([]);
   const { token, user } = useContext(UserContext);
   let [click, setClick] = useState(false);
   let [refresh, setRefresh] = useState(false);
-  const arr = [...inOut]
+  const arr = [...inOut];
 
   const config = { headers: { Authorization: `Bearer ${token}` } };
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/transactions`, config)
-    .then((resp) => {
+    axios.get(`${BASE_URL}/transactions`, config).then((resp) => {
       setInOut(resp.data);
     });
   }, [refresh]);
@@ -28,54 +27,55 @@ export default function Tela01() {
   let resultValue = 0;
   inOut.map((saldo) => (resultValue = resultValue + Number(saldo.value)));
 
-  async function deleteRequest(){
-    if(!token){
+  async function deleteRequest() {
+    if (!token) {
       alert("Você precisa estar logado para criar uma saída");
       return navigate("/");
     }
-  await axios.delete(`${BASE_URL}/delete/all`, config)
-   .then((resp)=>{
-    setRefresh(!refresh)
-  })
-   .catch((error)=>{
-    alert(error.response.data.error)
-   })
+    await axios
+      .delete(`${BASE_URL}/delete/all`, config)
+      .then((resp) => {
+        setRefresh(!refresh);
+      })
+      .catch((error) => {
+        alert(error.response.data.error);
+      });
     setClick((click = false));
   }
 
   return (
     <>
       <Container>
-        <Topo>
-          <TxtTopo>Olá, {user}</TxtTopo>
+        <Top>
+          <TxtTop>Olá, {user}</TxtTop>
           <RiDeleteBin2Line
-              style={{ color: "white", fontSize: 30, cursor: "pointer" }}
-              onClick={() => setClick(!click)}
-            />
-        </Topo>
+            style={{ color: "white", fontSize: 30, cursor: "pointer" }}
+            onClick={() => setClick(!click)}
+          />
+        </Top>
         <Main>
-        {click ? (
+          {click ? (
             <Box>
               <TextBox>Apagar todos os dados?</TextBox>
-             <Span>
-             <BoxButtons
-                onClick={async () => {
-                  deleteRequest()
-                }}
-              >
-                Sim
-              </BoxButtons>
-              <BoxButtons
-                onClick={() => {
-                  setClick((click = false));
-                }}
-              >
-                Não
-              </BoxButtons>
-             </Span>
+              <Span>
+                <BoxButtons
+                  onClick={async () => {
+                    deleteRequest();
+                  }}
+                >
+                  Sim
+                </BoxButtons>
+                <BoxButtons
+                  onClick={() => {
+                    setClick((click = false));
+                  }}
+                >
+                  Não
+                </BoxButtons>
+              </Span>
             </Box>
           ) : (
-            ''
+            ""
           )}
 
           {arr.length !== 0 ? (
@@ -109,10 +109,10 @@ export default function Tela01() {
         </Saldo>
 
         <Footer>
-          <Buttons  
+          <Buttons
             onClick={() => {
               navigate("/newin");
-            }} 
+            }}
           >
             <Img src={mais} alt="" />
             <TxtBotao>Nova entrada</TxtBotao>
@@ -166,18 +166,18 @@ export const Box = styled.div`
 `;
 
 export const TextBox = styled.div`
-display: flex;
-text-align: center;
+  display: flex;
+  text-align: center;
   justify-content: space-around;
   align-items: center;
   color: white;
   margin: 5px;
-font-weight: 600;
+  font-weight: 600;
 `;
 
 export const Span = styled.div`
-display: flex;
-`
+  display: flex;
+`;
 
 export const BoxButtons = styled.span`
   display: flex;
@@ -251,13 +251,13 @@ export const Img = styled.img`
   width: 18%;
 `;
 
-export const TxtTopo = styled.h1`
+export const TxtTop = styled.h1`
   font-size: 26px;
   font-weight: 700;
   color: white;
 `;
 
-export const Topo = styled.div`
+export const Top = styled.div`
   display: flex;
   margin-bottom: 10px;
   justify-content: space-between;

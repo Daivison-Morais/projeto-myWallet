@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Container, Input, TxtCadastro, Button } from "./Login";
 import styled from "styled-components";
 
-export default function Cadastro() {
+export default function SignUp() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -19,7 +19,7 @@ export default function Cadastro() {
   function handleForm(event) {
     event.preventDefault();
 
-    setDisabledButton(true)
+    setDisabledButton(true);
 
     const body = {
       name: name,
@@ -29,15 +29,14 @@ export default function Cadastro() {
     };
 
     axios
-      .post(
-        `${BASE_URL}/sign-up`, body)
+      .post(`${BASE_URL}/sign-up`, body)
       .then((resposta) => {
         alert("Cadastro realizado!");
-        setDisabledButton(false)
+        setDisabledButton(false);
         navigate("/");
       })
       .catch((error) => {
-        setDisabledButton(false)
+        setDisabledButton(false);
         alert(error.response.data.error);
       });
   }
@@ -85,7 +84,9 @@ export default function Cadastro() {
               required
             ></Input>
           </div>
-          <Button disabled={disabledButton} type="submit">Cadastrar</Button>
+          <Button disabled={disabledButton} type="submit">
+            Cadastrar
+          </Button>
           <TxtCadastro onClick={() => navigate("/")}>
             Já tem uma conta? Entre agora!
           </TxtCadastro>
@@ -96,6 +97,5 @@ export default function Cadastro() {
 }
 
 export const Foto = styled(Button)`
-  cursor: ${({disabled})=> disabled ? "not-allowed" : "pointer"};
-
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
 `;

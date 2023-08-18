@@ -1,11 +1,11 @@
 import "../styles/styles.css";
-import Cadastro from "./Cadastro";
+import SignUp from "./SignUp";
 import Login from "./Login";
-import Tela01 from "./Tela01";
-import NovaSaida from "./NovaSaida.js";
+import MainScreen from "./MainScreen";
+import NewOut from "./NewOut.js";
 import GlobalStyle from "../styles/globalStyles";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import NovaEntrada from "./NovaEntrada";
+import NewIn from "./NewIn";
 import { useState } from "react";
 import UserContext from "./UserContext";
 
@@ -26,10 +26,10 @@ function App() {
         >
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/cadastro" element={<Cadastro />} />
-            <Route path="/tela01" element={<Tela01 />} />
-            <Route path="/newIn" element={<NovaEntrada />} />
-            <Route path="/newout" element={<NovaSaida />} />
+            <Route path="/signUp" element={<SignUp />} />
+            <Route path="/mainScreen" element={<MainScreen />} />
+            <Route path="/newIn" element={<NewIn />} />
+            <Route path="/newout" element={<NewOut />} />
           </Routes>
         </UserContext.Provider>
       </BrowserRouter>

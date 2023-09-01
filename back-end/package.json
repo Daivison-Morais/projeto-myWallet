@@ -6,7 +6,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon --legacy-watch src/index.js"
+    "dev": "nodemon --legacy-watch src/index.js",
+    "run:docker":"docker compose up"
   },
   "keywords": [],
   "author": "Daivison Morais",

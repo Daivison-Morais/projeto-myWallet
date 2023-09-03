@@ -6,6 +6,7 @@ import { useContext } from "react";
 import UserContext from "./UserContext";
 import styled from "styled-components";
 import BASE_URL from "./services";
+import LoadSimbol from "./LoadSimbol";
 
 export default function NewIn() {
   const { token } = useContext(UserContext);
@@ -40,7 +41,7 @@ export default function NewIn() {
       })
       .catch((error) => {
         setDisabledButton(false);
-        alert(error.response.data);
+        alert(error.response.data.error);
       });
   }
 
@@ -57,7 +58,6 @@ export default function NewIn() {
               type="text"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              required
             ></Input>
           </div>
 
@@ -72,7 +72,7 @@ export default function NewIn() {
           </div>
 
           <Button disabled={disabledButton} type="submit">
-            Salvar entrada
+            {disabledButton ? <LoadSimbol/> : "Salvar entrada"}
           </Button>
         </form>
       </Container>
@@ -81,6 +81,9 @@ export default function NewIn() {
 }
 
 export const Button = styled.button`
+display: flex;
+justify-content: center;
+align-items: center;
   width: 100%;
   height: 45px;
   background-color: #a328d6;

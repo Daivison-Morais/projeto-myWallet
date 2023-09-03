@@ -14,5 +14,5 @@ export const postSigninSchema = joi.object({
 
 export const schemaTransactions = joi.object({
   value: joi.number().required(),
-  descricao: joi.string().max(40).trim().required(),
+  descricao: joi.string().max(40).trim(),
 });

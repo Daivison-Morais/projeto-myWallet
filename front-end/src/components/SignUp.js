@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Container, Input, TxtCadastro, Button } from "./Login";
 import styled from "styled-components";
+import LoadSimbol from "./LoadSimbol";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -85,7 +86,7 @@ export default function SignUp() {
             ></Input>
           </div>
           <Button disabled={disabledButton} type="submit">
-            Cadastrar
+            {disabledButton ? <LoadSimbol/> : "Cadastrar"}
           </Button>
           <TxtCadastro onClick={() => navigate("/")}>
             Já tem uma conta? Entre agora!

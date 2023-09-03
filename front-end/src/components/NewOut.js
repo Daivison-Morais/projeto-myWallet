@@ -59,7 +59,6 @@ export default function NewOut() {
               type="text"
               value={descricao}
               onChange={(event) => setDescricao(event.target.value)}
-              required
             ></Input>
           </div>
 

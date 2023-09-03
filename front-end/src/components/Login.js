@@ -4,6 +4,7 @@ import { useState, useContext } from "react";
 import UserContext from "./UserContext";
 import axios from "axios";
 import BASE_URL from "./services";
+import LoadSimbol from "./LoadSimbol";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -65,7 +66,7 @@ export default function Login() {
           </div>
 
           <Button disabled={disabledButton} type="submit">
-            Entrar
+            {disabledButton ? <LoadSimbol/> : "Entrar"}
           </Button>
         </form>
         <TxtCadastro onClick={() => navigate("/signUp")}>
@@ -99,6 +100,9 @@ export const TxtCadastro = styled.div`
 `;
 
 export const Button = styled.button`
+display: flex;
+justify-content: center;
+align-items: center;
   width: 85vw;
   height: 45px;
   background-color: #a328d6;
@@ -108,7 +112,7 @@ export const Button = styled.button`
   font-weight: 700;
   color: #ffffff;
   box-sizing: border-box;
-  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  cursor: pointer;
   border-style: hidden;
 `;
 

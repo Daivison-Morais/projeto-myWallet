@@ -7,31 +7,41 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "./services";
 import { RiDeleteBin2Line } from "react-icons/ri";
+import { GiHamburgerMenu } from "react-icons/gi";
+import LoadSimbol from "./LoadSimbol";
+import SideBar from "./SideBar";
 
 export default function MainScreen() {
-  const [inOut, setInOut] = useState([]);
+  const [inOut, setInOut] = useState(["none"]);
   const { token, user } = useContext(UserContext);
   let [click, setClick] = useState(false);
-  let [refresh, setRefresh] = useState(false);
-  const arr = [...inOut];
+  let [onSidebar, setOnsidebar] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const config = { headers: { Authorization: `Bearer ${token}` } };
   const navigate = useNavigate();
 
   useEffect(() => {
     axios.get(`${BASE_URL}/transactions`, config).then((resp) => {
-      setInOut(resp.data);
+      setInOut(resp.data.reverse());
+      console.log("AQUI: ", inOut)
     });
   }, [refresh]);
 
   let resultValue = 0;
-  inOut.map((saldo) => (resultValue = resultValue + Number(saldo.value)));
+  if(inOut[0] !== "none"){
+    inOut.map((saldo) => (resultValue = resultValue + Number(saldo.value)));
+  }
 
-  async function deleteRequest() {
+  function infoReLogin (){
     if (!token) {
       alert("Você precisa estar logado para criar uma saída");
       return navigate("/");
     }
+  }
+
+  async function deleteRequest() {
+    infoReLogin();
     await axios
       .delete(`${BASE_URL}/delete/all`, config)
       .then((resp) => {
@@ -46,12 +56,18 @@ export default function MainScreen() {
   return (
     <>
       <Container>
+      {onSidebar ? <SideBar/> : ""}
+
         <Top>
           <TxtTop>Olá, {user}</TxtTop>
+          <GiHamburgerMenu 
+          style={{ color: "white", fontSize: 30, cursor: "pointer" }} 
+          onClick={() => setOnsidebar(!onSidebar)}/>
           <RiDeleteBin2Line
             style={{ color: "white", fontSize: 30, cursor: "pointer" }}
             onClick={() => setClick(!click)}
           />
+          
         </Top>
         <Main>
           {click ? (
@@ -67,7 +83,7 @@ export default function MainScreen() {
                 </BoxButtons>
                 <BoxButtons
                   onClick={() => {
-                    setClick((click = false));
+                    setClick(false);
                   }}
                 >
                   Não
@@ -78,17 +94,14 @@ export default function MainScreen() {
             ""
           )}
 
-          {arr.length !== 0 ? (
-            arr.reverse().map((value) => (
+          {inOut[0] === "none"? <LoadSimbol/> : inOut.length !== 0 ? (
+            inOut.map((value) => (
+                           
               <BlocoAnotation>
                 <Date>{value.date}</Date>
                 <Description>{value.descricao}</Description>
                 <Value>
-                  {value.in === "true" ? (
-                    <CorVerde>{value.value}</CorVerde>
-                  ) : (
-                    <CorVermelho>{value.value}</CorVermelho>
-                  )}
+                    <CollorValue value={value.in}>{Number.isInteger(value.value) ? value.value : value.value.toLocaleString("pt-BR")}</CollorValue>
                 </Value>
               </BlocoAnotation>
             ))
@@ -99,19 +112,14 @@ export default function MainScreen() {
           )}
         </Main>
         <Saldo>
-          {" "}
           Saldo:{" "}
-          {resultValue >= 0 ? (
-            <CorVerde>{resultValue} R$</CorVerde>
-          ) : (
-            <CorVermelho>{resultValue} R$</CorVermelho>
-          )}
+            <CollorValue value={resultValue}>{resultValue.toLocaleString("pt-BR")} R$</CollorValue>
         </Saldo>
 
         <Footer>
           <Buttons
             onClick={() => {
-              navigate("/newin");
+              token ? navigate("/newin") : infoReLogin();
             }}
           >
             <Img src={mais} alt="" />
@@ -119,7 +127,7 @@ export default function MainScreen() {
           </Buttons>
           <Buttons
             onClick={() => {
-              navigate("/newout");
+              token ? navigate("/newout") :infoReLogin() ;
             }}
           >
             <Img src={menos} alt="" />
@@ -192,6 +200,11 @@ export const BoxButtons = styled.span`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   background-color: #8c11be;
   border-radius: 5px;
+`;
+
+export const CollorValue = styled.div`
+  color: ${({value}) => value === "true" || value >= 0 ? "green" : "red"};
+  margin-left: 7px;
 `;
 
 export const CorVerde = styled.div`
@@ -296,8 +309,11 @@ export const Buttons = styled.button`
 
 export const Container = styled.div`
   display: flex;
+  position: relative;
   flex-direction: column;
   justify-content: space-between;
-  height: 93%;
-  width: 93%;
+  padding: 3vw;
+  height:100vh;
+  width: 100vw;
+
 `;

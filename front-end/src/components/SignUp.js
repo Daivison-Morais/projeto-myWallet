@@ -1,12 +1,11 @@
 import axios from "axios";
 import { useState } from "react";
 import BASE_URL from "./services";
-
 import { useNavigate } from "react-router-dom";
-
 import { Container, Input, TxtCadastro, Button } from "./Login";
 import styled from "styled-components";
 import LoadSimbol from "./LoadSimbol";
+import { useMutation } from "react-query";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -17,10 +16,36 @@ export default function SignUp() {
 
   const navigate = useNavigate();
 
+  const mutation = useMutation({
+    mutationFn:  ({ BASE_URL, body }) => {
+      return axios
+        .post(`${BASE_URL}/sign-up`, body)
+        .then(() => {
+          alert("Cadastro realizado!")
+          setDisabledButton(false);
+          navigate("/");
+        })
+        .catch((error) => {
+          setDisabledButton(false);
+          alert(error.response.data.error);
+        });
+    },
+  });
+
   function handleForm(event) {
     event.preventDefault();
 
     setDisabledButton(true);
+
+    if (password !== confirmPassword) {
+      setDisabledButton(false);
+      return alert("Senhas não conferem!");
+    }
+
+    if (password.length < 6 || confirmPassword.length < 6) {
+      setDisabledButton(false);
+      return alert("Senha deve ter mais que 6 caracteres");
+    }
 
     const body = {
       name: name,
@@ -28,18 +53,10 @@ export default function SignUp() {
       confirmPassword: confirmPassword,
       password: password,
     };
+    console.log(body)
 
-    axios
-      .post(`${BASE_URL}/sign-up`, body)
-      .then((resposta) => {
-        alert("Cadastro realizado!");
-        setDisabledButton(false);
-        navigate("/");
-      })
-      .catch((error) => {
-        setDisabledButton(false);
-        alert(error.response.data.error);
-      });
+
+    mutation.mutate({ BASE_URL: BASE_URL, body: body });
   }
 
   return (
@@ -48,20 +65,20 @@ export default function SignUp() {
         <form onSubmit={handleForm}>
           <div>
             <Input
-              placeholder="E-mail"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Nome"
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
               required
             ></Input>
           </div>
 
           <div>
             <Input
-              placeholder="Nome"
-              type="text"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
+              placeholder="E-mail"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
               required
             ></Input>
           </div>
@@ -80,13 +97,13 @@ export default function SignUp() {
             <Input
               placeholder="Confirme a senha"
               type="password"
-              value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
+              value={confirmPassword}
               required
             ></Input>
           </div>
           <Button disabled={disabledButton} type="submit">
-            {disabledButton ? <LoadSimbol/> : "Cadastrar"}
+            {disabledButton ? <LoadSimbol /> : "Cadastrar"}
           </Button>
           <TxtCadastro onClick={() => navigate("/")}>
             Já tem uma conta? Entre agora!
@@ -100,3 +117,4 @@ export default function SignUp() {
 export const Foto = styled(Button)`
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
 `;
+

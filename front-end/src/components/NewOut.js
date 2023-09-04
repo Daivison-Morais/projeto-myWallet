@@ -66,6 +66,8 @@ export default function NewOut() {
             <Input
               placeholder="Valor"
               type="number"
+              autoFocus={true}
+              step="0.01" 
               value={value}
               onChange={(event) => setValue(event.target.value)}
               required

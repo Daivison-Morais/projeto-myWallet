@@ -12,6 +12,7 @@ import UserContext from "./UserContext";
 function App() {
   const [user, setUser] = useState("");
   const [token, setToken] = useState("");
+
   return (
     <>
       <GlobalStyle />

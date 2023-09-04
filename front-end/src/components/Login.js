@@ -5,6 +5,7 @@ import UserContext from "./UserContext";
 import axios from "axios";
 import BASE_URL from "./services";
 import LoadSimbol from "./LoadSimbol";
+import { useMutation } from "react-query";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -20,24 +21,29 @@ export default function Login() {
     password: senha,
   };
 
+  const mutation = useMutation({
+    mutationFn: async ({ BASE_URL, body }) => {
+      return await axios
+        .post(`${BASE_URL}/sign-in`, body)
+        .then((response) => {
+          setToken(response.data.token);
+          setUser(response.data.user);
+          setDisabledButton(false);
+          navigate("/mainScreen");
+        })
+        .catch((error) => {
+          setDisabledButton(false);
+          alert(error.response.data.error);
+        });
+    },
+  });
+
   function handleForm(event) {
     event.preventDefault();
 
     setDisabledButton(true);
 
-    axios
-      .post(`${BASE_URL}/sign-in`, body)
-      .then((resposta) => {
-        setToken(resposta.data.token);
-        setUser(resposta.data.user);
-        setDisabledButton(false);
-        navigate("/mainScreen");
-      })
-      .catch((error) => {
-        alert(error.response.data);
-        setDisabledButton(false);
-        console.log(error.response.data);
-      });
+    mutation.mutate({ BASE_URL: BASE_URL, body: body });
   }
 
   return (
@@ -66,7 +72,7 @@ export default function Login() {
           </div>
 
           <Button disabled={disabledButton} type="submit">
-            {disabledButton ? <LoadSimbol/> : "Entrar"}
+            {disabledButton ? <LoadSimbol /> : "Entrar"}
           </Button>
         </form>
         <TxtCadastro onClick={() => navigate("/signUp")}>
@@ -100,9 +106,9 @@ export const TxtCadastro = styled.div`
 `;
 
 export const Button = styled.button`
-display: flex;
-justify-content: center;
-align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 85vw;
   height: 45px;
   background-color: #a328d6;

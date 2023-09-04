@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import mais from "../assets/img/mais.png";
 import menos from "../assets/img/menos.png";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import UserContext from "./UserContext";
 import axios from "axios";
+import { useQuery, useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "./services";
 import { RiDeleteBin2Line } from "react-icons/ri";
@@ -12,62 +13,62 @@ import LoadSimbol from "./LoadSimbol";
 import SideBar from "./SideBar";
 
 export default function MainScreen() {
-  const [inOut, setInOut] = useState(["none"]);
   const { token, user } = useContext(UserContext);
   let [click, setClick] = useState(false);
   let [onSidebar, setOnsidebar] = useState(false);
-  const [refresh, setRefresh] = useState(false);
 
   const config = { headers: { Authorization: `Bearer ${token}` } };
   const navigate = useNavigate();
 
-  useEffect(() => {
-    axios.get(`${BASE_URL}/transactions`, config).then((resp) => {
-      setInOut(resp.data.reverse());
-      console.log("AQUI: ", inOut)
-    });
-  }, [refresh]);
+  const { data, isLoading, error, refetch } = useQuery("Transactions", async () => {
+    console.log("aqui", data);
+
+    return await axios
+      .get(`${BASE_URL}/transactions`, config)
+      .then((response) => response.data.reverse());
+  }, {
+    retry: 3,
+  });
+
+  const mutation = useMutation({
+    mutationFn: ({BASE_URL, config}) => {
+      return axios
+      .delete(`${BASE_URL}/delete/all`, config)
+    }, 
+    onError: (error) => {console.log(error)}, 
+    onSuccess: ()=>{setClick(false)
+      refetch();}});
+
+  if (isLoading) return <LoadSimbol />;
+
+  if (error) return alert("Tente novamente mais tarde");
 
   let resultValue = 0;
-  if(inOut[0] !== "none"){
-    inOut.map((saldo) => (resultValue = resultValue + Number(saldo.value)));
+  if (data[0] !== "none") {
+    data.map((saldo) => (resultValue = resultValue + Number(saldo.value)));
   }
 
-  function infoReLogin (){
+  function infoReLogin() {
     if (!token) {
       alert("Você precisa estar logado para criar uma saída");
       return navigate("/");
     }
   }
 
-  async function deleteRequest() {
-    infoReLogin();
-    await axios
-      .delete(`${BASE_URL}/delete/all`, config)
-      .then((resp) => {
-        setRefresh(!refresh);
-      })
-      .catch((error) => {
-        alert(error.response.data.error);
-      });
-    setClick((click = false));
-  }
-
   return (
     <>
       <Container>
-      {onSidebar ? <SideBar/> : ""}
-
+        {onSidebar ? <SideBar /> : ""}
         <Top>
           <TxtTop>Olá, {user}</TxtTop>
-          <GiHamburgerMenu 
-          style={{ color: "white", fontSize: 30, cursor: "pointer" }} 
-          onClick={() => setOnsidebar(!onSidebar)}/>
+          <GiHamburgerMenu
+            style={{ color: "white", fontSize: 30, cursor: "pointer" }}
+            onClick={() => setOnsidebar(!onSidebar)}
+          />
           <RiDeleteBin2Line
             style={{ color: "white", fontSize: 30, cursor: "pointer" }}
             onClick={() => setClick(!click)}
           />
-          
         </Top>
         <Main>
           {click ? (
@@ -75,8 +76,8 @@ export default function MainScreen() {
               <TextBox>Apagar todos os dados?</TextBox>
               <Span>
                 <BoxButtons
-                  onClick={async () => {
-                    deleteRequest();
+                  onClick={ () => {
+                    mutation.mutate({BASE_URL: BASE_URL,config: config});
                   }}
                 >
                   Sim
@@ -94,14 +95,19 @@ export default function MainScreen() {
             ""
           )}
 
-          {inOut[0] === "none"? <LoadSimbol/> : inOut.length !== 0 ? (
-            inOut.map((value) => (
-                           
+          {data[0] === "none" ? (
+            <LoadSimbol />
+          ) : data.length !== 0 ? (
+            data.map((value) => (
               <BlocoAnotation>
                 <Date>{value.date}</Date>
                 <Description>{value.descricao}</Description>
                 <Value>
-                    <CollorValue value={value.in}>{Number.isInteger(value.value) ? value.value : value.value.toLocaleString("pt-BR")}</CollorValue>
+                  <CollorValue value={value.in}>
+                    {Number.isInteger(value.value)
+                      ? value.value
+                      : Number(value.value).toLocaleString("pt-BR")}
+                  </CollorValue>
                 </Value>
               </BlocoAnotation>
             ))
@@ -113,7 +119,13 @@ export default function MainScreen() {
         </Main>
         <Saldo>
           Saldo:{" "}
-            <CollorValue value={resultValue}>{resultValue.toLocaleString("pt-BR")} R$</CollorValue>
+          <CollorValue value={resultValue}>
+            {resultValue.toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{" "}
+            R$
+          </CollorValue>
         </Saldo>
 
         <Footer>
@@ -127,7 +139,7 @@ export default function MainScreen() {
           </Buttons>
           <Buttons
             onClick={() => {
-              token ? navigate("/newout") :infoReLogin() ;
+              token ? navigate("/newout") : infoReLogin();
             }}
           >
             <Img src={menos} alt="" />
@@ -203,7 +215,7 @@ export const BoxButtons = styled.span`
 `;
 
 export const CollorValue = styled.div`
-  color: ${({value}) => value === "true" || value >= 0 ? "green" : "red"};
+  color: ${({ value }) => (value === "true" || value >= 0 ? "green" : "red")};
   margin-left: 7px;
 `;
 
@@ -313,7 +325,6 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   padding: 3vw;
-  height:100vh;
+  height: 100vh;
   width: 100vw;
-
 `;

@@ -4,40 +4,31 @@ import menos from "../assets/img/menos.png";
 import { useContext, useState } from "react";
 import UserContext from "./UserContext";
 import axios from "axios";
-import { useQuery, useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "./services";
-import { RiDeleteBin2Line } from "react-icons/ri";
 import { GiHamburgerMenu } from "react-icons/gi";
 import LoadSimbol from "./LoadSimbol";
 import SideBar from "./SideBar";
+import { useQuery } from "react-query";
 
 export default function MainScreen() {
   const { token, user } = useContext(UserContext);
-  let [click, setClick] = useState(false);
-  let [onSidebar, setOnsidebar] = useState(false);
+  const [onSidebar, setOnsidebar] = useState(false);
 
   const config = { headers: { Authorization: `Bearer ${token}` } };
   const navigate = useNavigate();
 
-  const { data, isLoading, error, refetch } = useQuery("Transactions", async () => {
-    console.log("aqui", data);
-
-    return await axios
-      .get(`${BASE_URL}/transactions`, config)
-      .then((response) => response.data.reverse());
-  }, {
-    retry: 3,
-  });
-
-  const mutation = useMutation({
-    mutationFn: ({BASE_URL, config}) => {
-      return axios
-      .delete(`${BASE_URL}/delete/all`, config)
-    }, 
-    onError: (error) => {console.log(error)}, 
-    onSuccess: ()=>{setClick(false)
-      refetch();}});
+  const { data, isLoading, error } = useQuery(
+    "Transactions",
+    async () => {
+      return await axios
+        .get(`${BASE_URL}/transactions`, config)
+        .then((response) => response.data.reverse());
+    },
+    {
+      retry: 3,
+    }
+  );
 
   if (isLoading) return <LoadSimbol />;
 
@@ -45,7 +36,7 @@ export default function MainScreen() {
 
   let resultValue = 0;
   if (data[0] !== "none") {
-    data.map((saldo) => (resultValue = resultValue + Number(saldo.value)));
+    data.map((saldo) => (resultValue += Number(saldo.value)));
   }
 
   function infoReLogin() {
@@ -54,59 +45,49 @@ export default function MainScreen() {
       return navigate("/");
     }
   }
+  //onClick={() => onSidebar ? setOnsidebar(false) : ""}
 
   return (
     <>
       <Container>
-        {onSidebar ? <SideBar /> : ""}
+        {onSidebar ? (
+          <>
+          <SideBar 
+          setOnsidebar={setOnsidebar} 
+          onSidebar={onSidebar} 
+          data={data}/>
+          <Div onSidebar={onSidebar} onClick={()=>{setOnsidebar(false)}}></Div>
+          </>
+          
+        ) : (
+          ""
+        )}
         <Top>
           <TxtTop>Olá, {user}</TxtTop>
           <GiHamburgerMenu
-            style={{ color: "white", fontSize: 30, cursor: "pointer" }}
+            style={{
+              color: "white",
+              fontSize: 30,
+              cursor: "pointer",
+              zIndex: 500,
+            }}
             onClick={() => setOnsidebar(!onSidebar)}
-          />
-          <RiDeleteBin2Line
-            style={{ color: "white", fontSize: 30, cursor: "pointer" }}
-            onClick={() => setClick(!click)}
           />
         </Top>
         <Main>
-          {click ? (
-            <Box>
-              <TextBox>Apagar todos os dados?</TextBox>
-              <Span>
-                <BoxButtons
-                  onClick={ () => {
-                    mutation.mutate({BASE_URL: BASE_URL,config: config});
-                  }}
-                >
-                  Sim
-                </BoxButtons>
-                <BoxButtons
-                  onClick={() => {
-                    setClick(false);
-                  }}
-                >
-                  Não
-                </BoxButtons>
-              </Span>
-            </Box>
-          ) : (
-            ""
-          )}
-
           {data[0] === "none" ? (
             <LoadSimbol />
           ) : data.length !== 0 ? (
             data.map((value) => (
-              <BlocoAnotation>
+              <BlocoAnotation key={value._id}>
                 <Date>{value.date}</Date>
                 <Description>{value.descricao}</Description>
                 <Value>
                   <CollorValue value={value.in}>
-                    {Number.isInteger(value.value)
-                      ? value.value
-                      : Number(value.value).toLocaleString("pt-BR")}
+                    {Number(value.value).toLocaleString("pt-BR", {
+                     
+                      maximumFractionDigits: 2,
+                    })}
                   </CollorValue>
                 </Value>
               </BlocoAnotation>
@@ -118,7 +99,7 @@ export default function MainScreen() {
           )}
         </Main>
         <Saldo>
-          Saldo:{" "}
+          Saldo:
           <CollorValue value={resultValue}>
             {resultValue.toLocaleString("pt-BR", {
               minimumFractionDigits: 2,
@@ -151,6 +132,15 @@ export default function MainScreen() {
   );
 }
 
+const Div = styled.div`
+position: absolute;
+width: 32%;
+height: 100%;
+top: 0px;
+right: 0px;
+z-index: ${({onSidebar})=> onSidebar ? "5" : "-2"};
+`;
+
 export const Saldo = styled.div`
   display: flex;
   align-items: center;
@@ -164,54 +154,6 @@ export const Saldo = styled.div`
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
   background-color: #eff3f3;
-`;
-
-export const Box = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  position: absolute;
-  top: 0px;
-  right: 0;
-  width: 40vw;
-  max-width: 250px;
-  min-width: 128px;
-  padding: 5px;
-  margin: 5px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-  background-color: #a328d6;
-  border-radius: 5px;
-  z-index: 3;
-`;
-
-export const TextBox = styled.div`
-  display: flex;
-  text-align: center;
-  justify-content: space-around;
-  align-items: center;
-  color: white;
-  margin: 5px;
-  font-weight: 600;
-`;
-
-export const Span = styled.div`
-  display: flex;
-`;
-
-export const BoxButtons = styled.span`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 16vw;
-  max-width: 50px;
-  height: 7vh;
-  margin: 5px;
-  color: white;
-  cursor: pointer;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #8c11be;
-  border-radius: 5px;
 `;
 
 export const CollorValue = styled.div`
@@ -234,6 +176,10 @@ export const BlocoAnotation = styled.div`
   min-height: 45px;
   justify-content: space-between;
   word-wrap: break-word;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  margin: 4px;
+  padding: 4px;
 `;
 
 export const Date = styled.div`
@@ -258,12 +204,12 @@ export const Description = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  word-wrap: break-word;
-  width: 50%;
   text-align: center;
   font-size: 18px;
   font-weight: 400;
-  padding: 0 5px 0 10px;
+  margin: 5px 10px;
+  word-break: break-word;
+
 `;
 
 export const TxtBotao = styled.h2`
@@ -293,10 +239,9 @@ export const Main = styled.div`
   width: 100%;
   height: 67%;
   border-radius: 5px;
-  padding-left: 6px;
-  padding-right: 6px;
+  padding: 6px;
   overflow: scroll;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   background-color: #eff3f3;
 `;
 

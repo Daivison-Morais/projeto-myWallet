@@ -65,6 +65,7 @@ export default function NewIn() {
             <Input
               placeholder="Valor"
               type="number"
+              step="0.01"
               autoFocus={true}
               value={value}
               onChange={(event) => setValue(event.target.value)}

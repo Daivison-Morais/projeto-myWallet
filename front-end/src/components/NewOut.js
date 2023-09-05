@@ -7,6 +7,7 @@ import UserContext from "./UserContext";
 
 import styled from "styled-components";
 import BASE_URL from "./services";
+import LoadSimbol from "./LoadSimbol";
 
 export default function NewOut() {
   const { token } = useContext(UserContext);
@@ -28,10 +29,13 @@ export default function NewOut() {
 
     setDisabledButton(true);
 
+
     const body = {
       value: value > 0 ? value * -1 : value,
       descricao: descricao,
     };
+    console.log(body)
+
 
     axios
       .post(`${BASE_URL}/newout`, body, config)
@@ -75,7 +79,7 @@ export default function NewOut() {
           </div>
 
           <Button disabled={disabledButton} type="submit">
-            Salvar Saída
+          {disabledButton ? <LoadSimbol/> : "Salvar Saída"} 
           </Button>
         </form>
       </Container>

@@ -20,7 +20,7 @@ export async function createTransaction(sessionId, body){
         userId: sessionId,
         value: body.value,
         descricao: body.descricao,
-        date: dayjs().format("DD/MM"),
+        date: dayjs().format("DD/MM/AAAA"),
         in: "false",
       });
 }

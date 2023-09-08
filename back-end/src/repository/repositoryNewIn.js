@@ -20,7 +20,7 @@ export async function createTransaction(sessionId, body){
         userId: sessionId,
         value: Number(body.value),
         descricao: body.descricao,
-        date: dayjs().format("DD/MM"),
+        date: dayjs().tz('America/Belem').format("DD/MM/AAAA"),
         in: "true",
       });
 }

@@ -275,6 +275,6 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   padding: 3vw;
-  height: 100vh;
+  height: 100%;
   width: 100vw;
 `;

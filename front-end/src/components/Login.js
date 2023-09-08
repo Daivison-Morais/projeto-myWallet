@@ -56,6 +56,7 @@ export default function Login() {
               placeholder="E-mail"
               type="email"
               value={email}
+              autoFocus={true}
               onChange={(event) => setEmail(event.target.value)}
               required
             ></Input>

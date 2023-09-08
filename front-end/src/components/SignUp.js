@@ -68,6 +68,7 @@ export default function SignUp() {
               placeholder="Nome"
               type="text"
               value={name}
+              autoFocus={true}
               onChange={(event) => setName(event.target.value)}
               required
             ></Input>

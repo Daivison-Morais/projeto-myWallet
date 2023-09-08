@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useContext } from "react";
 import UserContext from "./UserContext";
-
 import styled from "styled-components";
 import BASE_URL from "./services";
 import LoadSimbol from "./LoadSimbol";
@@ -14,9 +13,7 @@ export default function NewOut() {
   const [value, setValue] = useState("");
   const [descricao, setDescricao] = useState("");
   const [disabledButton, setDisabledButton] = useState(false);
-
   const config = { headers: { Authorization: `Bearer ${token}` } };
-
   const navigate = useNavigate();
 
   function handleForm(event) {
@@ -29,13 +26,10 @@ export default function NewOut() {
 
     setDisabledButton(true);
 
-
     const body = {
       value: value > 0 ? value * -1 : value,
       descricao: descricao,
     };
-    console.log(body)
-
 
     axios
       .post(`${BASE_URL}/newout`, body, config)
@@ -71,7 +65,7 @@ export default function NewOut() {
               placeholder="Valor"
               type="number"
               autoFocus={true}
-              step="0.01" 
+              step="0.01"
               value={value}
               onChange={(event) => setValue(event.target.value)}
               required
@@ -79,7 +73,7 @@ export default function NewOut() {
           </div>
 
           <Button disabled={disabledButton} type="submit">
-          {disabledButton ? <LoadSimbol/> : "Salvar Saída"} 
+            {disabledButton ? <LoadSimbol /> : "Salvar Saída"}
           </Button>
         </form>
       </Container>

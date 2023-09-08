@@ -13,9 +13,7 @@ export default function NewIn() {
   const [value, setValue] = useState("");
   const [description, setDescription] = useState("");
   const [disabledButton, setDisabledButton] = useState(false);
-
   const config = { headers: { Authorization: `Bearer ${token}` } };
-
   const navigate = useNavigate();
 
   function handleForm(event) {
@@ -74,7 +72,7 @@ export default function NewIn() {
           </div>
 
           <Button disabled={disabledButton} type="submit">
-            {disabledButton ? <LoadSimbol/> : "Salvar entrada"}
+            {disabledButton ? <LoadSimbol /> : "Salvar entrada"}
           </Button>
         </form>
       </Container>
@@ -83,9 +81,9 @@ export default function NewIn() {
 }
 
 export const Button = styled.button`
-display: flex;
-justify-content: center;
-align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 45px;
   background-color: #a328d6;

@@ -32,7 +32,13 @@ export default function MainScreen() {
 
   if (isLoading) return <LoadSimbol />;
 
-  if (error) return alert("Tente novamente mais tarde");
+  if (error) {
+    if (token === "") {
+     navigate("/");
+     return alert("Você precisa fazer login novamente");
+    }
+    return alert("Tente novamente mais tarde");
+  };
 
   let resultValue = 0;
   if (data[0] !== "none") {
@@ -45,7 +51,6 @@ export default function MainScreen() {
       return navigate("/");
     }
   }
-  //onClick={() => onSidebar ? setOnsidebar(false) : ""}
 
   return (
     <>
@@ -85,7 +90,6 @@ export default function MainScreen() {
                 <Value>
                   <CollorValue value={value.in}>
                     {Number(value.value).toLocaleString("pt-BR", {
-                     
                       maximumFractionDigits: 2,
                     })}
                   </CollorValue>
@@ -173,12 +177,12 @@ export const CorVermelho = styled.div`
 
 export const BlocoAnotation = styled.div`
   display: flex;
-  min-height: 45px;
+  min-height: 41px;
   justify-content: space-between;
   word-wrap: break-word;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
-  margin: 4px;
+  margin: 6px 4px;
   padding: 4px;
 `;
 
@@ -186,7 +190,8 @@ export const Date = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 15%;
+  width: 17%;
+  margin-left: 6px;
   font-size: 18px;
   font-weight: 400;
 `;

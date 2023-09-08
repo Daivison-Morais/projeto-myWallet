@@ -18,7 +18,11 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
   const queryClient = useQueryClient();
   const config = { headers: { Authorization: `Bearer ${token}` } };
 
-  console.log(data)
+  let totalIn = 0;
+  let totalOut = 0;
+  let higherEntryValue = 0;
+  let higherOutputValue = 0;
+  let saldo = 0;
 
   const mutation = useMutation({
     mutationFn: ({ BASE_URL, config }) => {
@@ -34,14 +38,68 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
     },
   });
 
+  const balanceMonth = data.reduce((acc, value) => {
+    saldo += Number(value.value.toLocaleString("pt-BR"));
+    if (value.in === "true") {
+      totalIn += Number(value.value);
+      if (Number(value.value) > higherEntryValue)
+        higherEntryValue = Number(value.value);
+    } else {
+      totalOut += Number(value.value);
+      if (value.value < higherOutputValue) higherOutputValue = value.value;
+    }
+
+    const month = value.date[3] + value.date[4];
+    acc[month] =
+      Number(acc[month]) + Number(value.value) || Number(value.value);
+    return acc;
+  }, {});
+
+  const monthTranslator = {
+    "01": "Janeiro",
+    "02": "Fevereiro",
+    "03": "Março",
+    "04": "Abril",
+    "05": "Maio",
+    "06": "Junho",
+    "07": "Julho",
+    "08": "Agosto",
+    "09": "Setembro",
+    10: "Outubro",
+    11: "Novenbro",
+    12: "Dezembro",
+  };
+
+  let highestBalanceMonth = Number.NEGATIVE_INFINITY;
+  let lowestBalanceMonth = Number.POSITIVE_INFINITY;
+  let highMonth = 0;
+  let lowMonth = 0;
+  const listMonth = [];
+
+  for (let item in balanceMonth) {
+    if (balanceMonth[item] > highestBalanceMonth) {
+      highestBalanceMonth = balanceMonth[item];
+      highMonth = monthTranslator[item];
+    }
+    if (balanceMonth[item] < lowestBalanceMonth) {
+      lowestBalanceMonth = balanceMonth[item];
+      lowMonth = monthTranslator[item];
+    }
+    listMonth.push({mounth : monthTranslator[item], balance : balanceMonth[item]})
+  }
+  console.log(listMonth)
+
   return (
     <>
       <Container>
         <TopicSidebar onClick={() => setClick(!click)}>
-          <TextSidebar>Apagar tudo</TextSidebar>
-          <RiDeleteBin2Line
-            style={{ color: "white", fontSize: 30, cursor: "pointer" }}
-          />
+          <Justify>
+            <TextSidebar>Apagar tudo</TextSidebar>
+            <RiDeleteBin2Line
+              style={{ color: "white", fontSize: 30, cursor: "pointer" }}
+            />
+          </Justify>
+
           {click ? (
             <ConfirmationBox>
               <TextBox>Apagar todos os dados?</TextBox>
@@ -73,35 +131,130 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
             navigate("/");
           }}
         >
-          <TextSidebar>Sair</TextSidebar>
-          <FiLogOut
-            style={{ color: "white", fontSize: 30, cursor: "pointer" }}
-          />
+          <Justify>
+            <TextSidebar>Sair</TextSidebar>
+            <FiLogOut
+              style={{ color: "white", fontSize: 30, cursor: "pointer" }}
+            />
+          </Justify>
         </TopicSidebar>
 
-        <TopicSidebar onClick={()=>{setOpenReport(!openReport) }}>
-          <TextSidebar>Relatório</TextSidebar><TbReportSearch 
-          style={{ color: "white", fontSize: 30, cursor: "pointer" }}/>
+        <TopicSidebar
+          onClick={() => {
+            setOpenReport(!openReport);
+          }}
+        >
+          <Justify>
+            <TextSidebar>Relatório</TextSidebar>
+            <TbReportSearch
+              style={{ color: "white", fontSize: 30, cursor: "pointer" }}
+            />
+          </Justify>
+          {openReport ? (
+            <ReportContainer openReport={openReport}>
+              <Center>
+                <TextSidebar>Geral</TextSidebar>
+                <Line></Line>
+              </Center>
+              <TopicReport>
+                <TextSidebar>Total de saídas: </TextSidebar>
+                <Value>{totalOut.toLocaleString("pt-BR")}</Value>
+              </TopicReport>
+              <TopicReport>
+                <TextSidebar>Total de entradas: </TextSidebar>{" "}
+                {totalIn.toLocaleString("pt-BR")}
+              </TopicReport>
+              <TopicReport>
+                <TextSidebar>Maior valor de entrada: </TextSidebar>{" "}
+                <Value>{higherEntryValue.toLocaleString("pt-BR")}</Value>
+              </TopicReport>
+              <TopicReport>
+                <TextSidebar>Maior valor de saída: </TextSidebar>
+                <Value>{higherOutputValue.toLocaleString("pt-BR")}</Value>
+              </TopicReport>
+              <TopicReport>
+                <TextSidebar>Saldo Atual: </TextSidebar>
+                <Value>{saldo.toLocaleString("pt-BR")}</Value>
+              </TopicReport>
+
+              <Center>
+                <TextSidebar>Por Mês</TextSidebar>
+                <Line></Line>
+              </Center>
+              <TopicReport>
+                <TextSidebar>Maior Saldo: </TextSidebar>
+                <Value>{highMonth}</Value>
+              </TopicReport>
+              <TopicReport>
+                <TextSidebar>Menor saldo: </TextSidebar>
+                <Value>{lowMonth}</Value>
+              </TopicReport>
+
+              <Center>
+                <TextSidebar>saldo por Mês</TextSidebar>
+                <Line></Line>
+              </Center>
+             { listMonth.map(({mounth, balance}) => {
+              return(
+<TopicReport>
+                <TextSidebar>{mounth} </TextSidebar>
+                <Value>{balance}</Value>
+              </TopicReport>
+              )
+                
+             }) }
+
+            </ReportContainer>
+          ) : (
+            ""
+          )}
         </TopicSidebar>
-        <ReportContainer openReport={openReport}>
-            <TopicReport>Valor total gasto: </TopicReport>
-            <TopicReport>Total de saídas: </TopicReport>
-            <TopicReport>Maior valor de entrada</TopicReport>
-            <TopicReport>Total de entradas: </TopicReport>
-            <TopicReport>Maior valor de saída: </TopicReport>
-          </ReportContainer>
       </Container>
     </>
   );
 }
 
+const Line = styled.div`
+  width: 100%;
+  border: 1px solid white;
+  margin: 2px 0;
+  border-bottom: 1px;
+`;
+
+const Center = styled.div`
+  display: flex;
+  width: 100%;
+  margin: 4px 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const TextSidebar = styled.div``;
+const Value = styled.div``;
+
 const TopicReport = styled.div`
-padding: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 2px;
   color: white;
+  font-size: 15px;
 `;
 
 const ReportContainer = styled.div`
-display: ${({openReport}) => openReport? "display" : "none"};
+  display: ${({ openReport }) => (openReport ? "flex" : "none")};
+  flex-direction: column;
+  background-color: #a328d6;
+  margin-top: 7px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+  background-color: #a328d6;
+  border-radius: 5px;
+  padding: 5px;
 `;
 
 export const ConfirmationBox = styled.div`
@@ -109,10 +262,7 @@ export const ConfirmationBox = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  position: absolute;
-  top: 0px;
-  right: 0;
-  width: 40vw;
+  width: 100%;
   max-width: 250px;
   min-width: 128px;
   padding: 5px;
@@ -120,7 +270,6 @@ export const ConfirmationBox = styled.div`
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
   background-color: #a328d6;
   border-radius: 5px;
-  z-index: 3;
 `;
 
 export const Span = styled.div`
@@ -151,11 +300,19 @@ export const BoxButtons = styled.span`
   border-radius: 5px;
 `;
 
-const TextSidebar = styled.div``;
+const Justify = styled.div`
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+`;
 
 const TopicSidebar = styled.div`
   color: white;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   min-height: 40px;

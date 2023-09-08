@@ -61,13 +61,11 @@ html{
     height: 100%;
     width: 100%;
     align-items:flex-end;
-	margin-botton: 97px;
 }
 body{
 	font-family: 'Raleway', sans-serif;
     height: 100%;
 	width: 100%;
-	margin-botton: 97px;
 }
 .root{  
 	display: flex;
@@ -77,7 +75,6 @@ body{
     height: 100%;
     font-family: 'Lexend Deca', sans-serif;
     font-weight: 400;
-	margin-botton: 97px;
 }
 
 `;

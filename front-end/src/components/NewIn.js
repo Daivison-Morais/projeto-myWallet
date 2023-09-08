@@ -16,12 +16,16 @@ export default function NewIn() {
   const config = { headers: { Authorization: `Bearer ${token}` } };
   const navigate = useNavigate();
 
+  if (!token) {
+    alert("Você precisa estar logado para criar uma saída");
+    return navigate("/");
+  }
+
   function handleForm(event) {
     event.preventDefault();
 
-    if (!token) {
-      alert("Você precisa estar logado para criar uma saída");
-      return navigate("/");
+    if(description === ""){
+      setDescription("-");
     }
 
     setDisabledButton(true);
@@ -30,6 +34,10 @@ export default function NewIn() {
       value: value,
       descricao: description,
     };
+    if(body.descricao === ""){
+      body.descricao = "-";
+    }
+    
     axios
       .post(`${BASE_URL}/newin`, body, config)
       .then((response) => {

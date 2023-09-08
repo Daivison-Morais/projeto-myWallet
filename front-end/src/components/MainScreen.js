@@ -84,15 +84,13 @@ export default function MainScreen() {
             <LoadSimbol />
           ) : data.length !== 0 ? (
             data.map((value) => (
-              <BlocoAnotation key={value._id}>
+              <BlocoAnotation key={value._id} value={value.in}>
                 <Date>{value.date}</Date>
                 <Description>{value.descricao}</Description>
                 <Value>
-                  <CollorValue value={value.in}>
                     {Number(value.value).toLocaleString("pt-BR", {
                       maximumFractionDigits: 2,
                     })}
-                  </CollorValue>
                 </Value>
               </BlocoAnotation>
             ))
@@ -102,15 +100,12 @@ export default function MainScreen() {
             </div>
           )}
         </Main>
-        <Saldo>
-          Saldo:
-          <CollorValue value={resultValue}>
-            {resultValue.toLocaleString("pt-BR", {
+        <Saldo value={resultValue}>
+          Saldo: {resultValue.toLocaleString("pt-BR", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}{" "}
             R$
-          </CollorValue>
         </Saldo>
 
         <Footer>
@@ -149,30 +144,15 @@ export const Saldo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: white;
   border-radius: 5px;
   font-size: 20px;
   height: 20px;
   padding: 15px 5px;
   margin-top: 6px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  color: ${({ value }) => (value === "true" || value >= 0 ? "#00B47A" : "#FF6666")};
   margin-bottom: 10px;
   background-color: #eff3f3;
-`;
-
-export const CollorValue = styled.div`
-  color: ${({ value }) => (value === "true" || value >= 0 ? "green" : "red")};
-  margin-left: 7px;
-`;
-
-export const CorVerde = styled.div`
-  color: green;
-  margin-left: 7px;
-`;
-
-export const CorVermelho = styled.div`
-  color: red;
-  margin-left: 7px;
 `;
 
 export const BlocoAnotation = styled.div`
@@ -181,6 +161,7 @@ export const BlocoAnotation = styled.div`
   justify-content: space-between;
   word-wrap: break-word;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  color: ${({ value }) => (value === "true" || value >= 0 ? "#00B47A" : "#FF6666")};
   border-radius: 5px;
   margin: 6px 4px;
   padding: 4px;
@@ -214,7 +195,6 @@ export const Description = styled.div`
   font-weight: 400;
   margin: 5px 10px;
   word-break: break-word;
-
 `;
 
 export const TxtBotao = styled.h2`

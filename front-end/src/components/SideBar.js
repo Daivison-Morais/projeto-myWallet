@@ -85,9 +85,12 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
       lowestBalanceMonth = balanceMonth[item];
       lowMonth = monthTranslator[item];
     }
-    listMonth.push({mounth : monthTranslator[item], balance : balanceMonth[item]})
+    listMonth.push({
+      mounth: monthTranslator[item],
+      balance: balanceMonth[item],
+    });
   }
-  console.log(listMonth)
+  console.log(listMonth);
 
   return (
     <>
@@ -194,16 +197,14 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
                 <TextSidebar>saldo por Mês</TextSidebar>
                 <Line></Line>
               </Center>
-             { listMonth.map(({mounth, balance}) => {
-              return(
-<TopicReport>
-                <TextSidebar>{mounth} </TextSidebar>
-                <Value>{balance}</Value>
-              </TopicReport>
-              )
-                
-             }) }
-
+              {listMonth.map(({ mounth, balance }) => {
+                return (
+                  <TopicReport>
+                    <TextSidebar>{mounth} </TextSidebar>
+                    <Value>{balance}</Value>
+                  </TopicReport>
+                );
+              })}
             </ReportContainer>
           ) : (
             ""
@@ -330,7 +331,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: space-between;
   width: 66%;
-  height: 98vh;
+  height: 98%;
   background-color: #a328d6;
   border: 1px solid white;
   max-width: 300px;

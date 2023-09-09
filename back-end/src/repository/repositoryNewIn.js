@@ -16,11 +16,12 @@ export async function findUser(sessionId){
 }
 
 export async function createTransaction(sessionId, body){
+ 
     await db.collection("transactions").insertOne({
         userId: sessionId,
         value: Number(body.value),
         descricao: body.descricao,
-        date: dayjs().tz('America/Belem').format("DD/MM/AAAA"),
+        date: dayjs().format("DD/MM"),
         in: "true",
       });
 }

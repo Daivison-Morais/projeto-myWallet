@@ -1,5 +1,8 @@
 import { deleteAllTransaction } from "../repository/RepositoryDelete.js";
 import { findSession, findUser } from "../repository/repositoryNewIn.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function serviceDeleteAll(authorization){
 
@@ -7,6 +10,8 @@ export async function serviceDeleteAll(authorization){
   if (!token) {
     throw unauthorizedError();
   }
+
+  jwt.verify(token, process.env.JWT_SECRET);
 
   const session = await findSession(token);
   if (!session) {

@@ -16,6 +16,10 @@ export async function controllerDeleteAll(req, res) {
       return res.status(httpStatus.CONFLICT).send({ error: error.message });
     }
 
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).send({ error: "A sessão foi encerrada." });
+    }
+
     console.error(error);
     return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }

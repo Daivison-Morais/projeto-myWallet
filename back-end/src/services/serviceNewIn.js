@@ -6,6 +6,9 @@ import {
   findUser,
 } from "../repository/repositoryNewIn.js";
 import { schemaTransactions } from "../schemas/allSchemas.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function serviceNewIn(body, authorization) {
 
@@ -13,6 +16,8 @@ export async function serviceNewIn(body, authorization) {
   if (!token) {
     throw unauthorizedError();
   }
+
+  jwt.verify(token, process.env.JWT_SECRET);
 
   const validation = schemaTransactions.validate(body, { abortEarly: false });
 

@@ -27,7 +27,11 @@ export default function SignUp() {
         })
         .catch((error) => {
           setDisabledButton(false);
+          if(error.response.data === undefined){
+            return alert("Tente novamnete mais tarde.")
+          }
           alert(error.response.data.error);
+          navigate("/")
         });
     },
   });
@@ -53,8 +57,6 @@ export default function SignUp() {
       confirmPassword: confirmPassword,
       password: password,
     };
-    console.log(body)
-
 
     mutation.mutate({ BASE_URL: BASE_URL, body: body });
   }

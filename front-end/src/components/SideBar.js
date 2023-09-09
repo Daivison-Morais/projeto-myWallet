@@ -29,7 +29,10 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
       return axios.delete(`${BASE_URL}/delete/all`, config);
     },
     onError: (error) => {
-      console.log(error);
+      if(error.response.data === undefined){
+        return alert("Tente novamnete mais tarde.")
+      }else alert(error.response.data.error);
+      navigate("/")
     },
     onSuccess: () => {
       setClick(false);
@@ -39,6 +42,7 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
   });
 
   const balanceMonth = data.reduce((acc, value) => {
+    
     saldo += Number(value.value.toLocaleString("pt-BR"));
     if (value.in === "true") {
       totalIn += Number(value.value);
@@ -65,9 +69,9 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
     "07": "Julho",
     "08": "Agosto",
     "09": "Setembro",
-    10: "Outubro",
-    11: "Novenbro",
-    12: "Dezembro",
+    "10": "Outubro",
+    "11": "Novenbro",
+    "12": "Dezembro",
   };
 
   let highestBalanceMonth = Number.NEGATIVE_INFINITY;
@@ -90,7 +94,6 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
       balance: balanceMonth[item],
     });
   }
-  console.log(listMonth);
 
   return (
     <>

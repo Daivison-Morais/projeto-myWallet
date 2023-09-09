@@ -12,11 +12,14 @@ export async function controllerNewIn(req, res) {
       return res.status(401).send({ error: error.message });
     }
 
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).send({ error: "A sessão foi encerrada." });
+    }
+
     if (error.name === "ConflictError") {
       return res.status(409).send({ error: error.message });
     }
 
-    console.error(error);
     return res.sendStatus(500);
   }
 }

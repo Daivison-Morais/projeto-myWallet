@@ -10,7 +10,11 @@ const authorization = req.headers.authorization;
     if (error.name === "UnauthorizedError") {
       return res.status(401).send({ error: error.message });
     }
-    console.error(error);
+
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).send({ error: "A sessão foi encerrada." });
+    }
+
     return res.sendStatus(500);
   }
 }

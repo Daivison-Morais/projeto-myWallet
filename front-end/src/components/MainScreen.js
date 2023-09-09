@@ -26,7 +26,7 @@ export default function MainScreen() {
         .then((response) => response.data.reverse());
     },
     {
-      retry: 3,
+      retry: 2,
     }
   );
 
@@ -37,7 +37,11 @@ export default function MainScreen() {
      navigate("/");
      return alert("Você precisa fazer login novamente");
     }
-    return alert("Tente novamente mais tarde");
+    
+    if(error.response.data === undefined){
+      return alert("Tente novamnete mais tarde.")
+    }else alert(error.response.data.error);
+    navigate("/")
   };
 
   let resultValue = 0;
@@ -171,7 +175,6 @@ export const Date = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 17%;
   margin-left: 6px;
   font-size: 18px;
   font-weight: 400;

@@ -11,7 +11,7 @@ import LoadSimbol from "./LoadSimbol";
 export default function NewOut() {
   const { token } = useContext(UserContext);
   const [value, setValue] = useState("");
-  const [descricao, setDescricao] = useState("");
+  const [description, setDescription] = useState("");
   const [disabledButton, setDisabledButton] = useState(false);
   const config = { headers: { Authorization: `Bearer ${token}` } };
   const navigate = useNavigate();
@@ -28,19 +28,24 @@ export default function NewOut() {
 
     const body = {
       value: value > 0 ? value * -1 : value,
-      descricao: descricao,
+      descricao: description,
     };
+
+    if(body.descricao === "") body.descricao = "-";
 
     axios
       .post(`${BASE_URL}/newout`, body, config)
       .then((resposta) => {
-        setDescricao(resposta.data);
+        setDescription(resposta.data);
         navigate("/mainScreen");
         setDisabledButton(false);
       })
-      .catch((erro) => {
+      .catch((error) => {
         setDisabledButton(false);
-        alert(erro.response.data.error);
+        if(error.response.data === undefined){
+          return alert("Tente novamnete mais tarde.")
+        }else alert(error.response.data.error);
+        navigate("/")
       });
   }
 
@@ -55,8 +60,8 @@ export default function NewOut() {
             <Input
               placeholder="Descrição"
               type="text"
-              value={descricao}
-              onChange={(event) => setDescricao(event.target.value)}
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
             ></Input>
           </div>
 

@@ -2,9 +2,8 @@ import conflictError from "../errors/conflitError.js";
 import { findEmail } from "../repository/repositoryCreateSignUp.js";
 import { createSession, findUser } from "../repository/repositorySigIn.js";
 import { postSigninSchema } from "../schemas/allSchemas.js";
-import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
-
+import jwt from "jsonwebtoken";
 
 export async function serviceSignIn (body){
 
@@ -23,8 +22,10 @@ export async function serviceSignIn (body){
       if (!isValid) {
         throw conflictError("email e/ou senha errados")
       }
-  
-      const token = uuidv4();
+
+      const data = {email: body.email}
+      const config = { expiresIn: 60*60*24*10 }
+      const token = jwt.sign(data, process.env.JWT_SECRET, config);
 
       await createSession(token, ExistsUser._id);
       

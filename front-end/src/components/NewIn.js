@@ -34,9 +34,8 @@ export default function NewIn() {
       value: value,
       descricao: description,
     };
-    if(body.descricao === ""){
-      body.descricao = "-";
-    }
+    
+    if(body.descricao === "") body.descricao = "-";
     
     axios
       .post(`${BASE_URL}/newin`, body, config)
@@ -47,7 +46,10 @@ export default function NewIn() {
       })
       .catch((error) => {
         setDisabledButton(false);
-        alert(error.response.data.error);
+        if(error.response.data === undefined){
+          return alert("Tente novamnete mais tarde.")
+        }else alert(error.response.data.error);
+        navigate("/")
       });
   }
 

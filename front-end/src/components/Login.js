@@ -33,6 +33,9 @@ export default function Login() {
         })
         .catch((error) => {
           setDisabledButton(false);
+          if(error.response.data === undefined){
+            return alert("Tente novamnete mais tarde.")
+          }
           alert(error.response.data.error);
         });
     },

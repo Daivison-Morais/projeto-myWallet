@@ -17,7 +17,6 @@ export default function NewIn() {
   const navigate = useNavigate();
 
   const config = { headers: { Authorization: `Bearer ${token}` } };
-  console.log(token);
 
   if (!token) {
     notify("Você precisa estar logado para criar uma saída");

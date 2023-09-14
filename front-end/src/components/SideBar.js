@@ -212,11 +212,9 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
                 <Line></Line>
               </Center>
               {listMonth.map(({ mounth, balance }, index) => {
-                console.log(listMonth);
                 let previousBalances = 0;
                 for (let i = index + 1; i <= listMonth.length - 1; i++) {
                   previousBalances += Number(listMonth[i].balance);
-                  console.log("previousBalances:  ", previousBalances);
                 }
                 return (
                   <TopicReport key={index}>

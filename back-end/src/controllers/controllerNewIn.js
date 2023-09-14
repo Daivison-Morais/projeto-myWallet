@@ -7,7 +7,6 @@ export async function controllerNewIn(req, res) {
 
   try {
     await serviceNewIn(body, session);
-    console.log(body)
 
     res.sendStatus(201);
   } catch (error) {

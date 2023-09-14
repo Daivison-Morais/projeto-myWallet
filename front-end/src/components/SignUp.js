@@ -2,36 +2,40 @@ import axios from "axios";
 import { useState } from "react";
 import BASE_URL from "./services";
 import { useNavigate } from "react-router-dom";
-import { Container, Input, TxtCadastro, Button } from "./Login";
+import { Container, Input, TxtCadastro, Button, BoxInput } from "./Login";
 import styled from "styled-components";
 import LoadSimbol from "./LoadSimbol";
 import { useMutation } from "react-query";
+import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+import notify from "./cardNotify";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [eyePass, setEyePass] = useState(false);
+  const [eyeConfir, setEyeConfir] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [password, setSenha] = useState("");
+
   const [disabledButton, setDisabledButton] = useState(false);
 
   const navigate = useNavigate();
 
   const mutation = useMutation({
-    mutationFn:  ({ BASE_URL, body }) => {
+    mutationFn: ({ BASE_URL, body }) => {
       return axios
         .post(`${BASE_URL}/sign-up`, body)
         .then(() => {
-          alert("Cadastro realizado!")
+          notify("Cadastro realizado!");
           setDisabledButton(false);
           navigate("/");
         })
         .catch((error) => {
           setDisabledButton(false);
-          if(error.response.data === undefined){
-            return alert("Tente novamnete mais tarde.")
+          if (error.response.data === undefined) {
+            return notify("Tente novamnete mais tarde.");
           }
-          alert(error.response.data.error);
-          navigate("/")
+          notify(error.response.data.error);
         });
     },
   });
@@ -43,22 +47,56 @@ export default function SignUp() {
 
     if (password !== confirmPassword) {
       setDisabledButton(false);
-      return alert("Senhas não conferem!");
+      return notify("Senhas não conferem!");
     }
 
     if (password.length < 6 || confirmPassword.length < 6) {
       setDisabledButton(false);
-      return alert("Senha deve ter mais que 6 caracteres");
+      return notify("Senha deve ter mais que 6 caracteres");
     }
 
     const body = {
-      name: name,
-      email: email,
-      confirmPassword: confirmPassword,
-      password: password,
+      name,
+      email,
+      confirmPassword,
+      password,
     };
 
     mutation.mutate({ BASE_URL: BASE_URL, body: body });
+  }
+
+  function eyeReturn(eye, setEye) {
+    return eye ? (
+      <AiOutlineEyeInvisible
+        onClick={() => {
+          setEye(!eye);
+        }}
+        style={{
+          position: "absolute",
+          top: "37%",
+          right: "13px",
+          width: "24px",
+          height: "24px",
+          color: "#898989",
+          cursor: "pointer",
+        }}
+      />
+    ) : (
+      <AiOutlineEye
+        onClick={() => {
+          setEye(!eye);
+        }}
+        style={{
+          position: "absolute",
+          top: "37%",
+          right: "13px",
+          width: "24px",
+          height: "24px",
+          color: "#898989",
+          cursor: "pointer",
+        }}
+      />
+    );
   }
 
   return (
@@ -86,25 +124,28 @@ export default function SignUp() {
             ></Input>
           </div>
 
-          <div>
+          <BoxInput>
             <Input
               placeholder="Senha"
-              type="password"
+              type={eyePass ? "text" : "password"}
               onChange={(event) => setSenha(event.target.value)}
               value={password}
               required
             ></Input>
-          </div>
+            {eyeReturn(eyePass, setEyePass)}
+          </BoxInput>
 
-          <div>
+          <BoxInput>
             <Input
               placeholder="Confirme a senha"
-              type="password"
+              type={eyeConfir ? "text" : "password"}
               onChange={(event) => setConfirmPassword(event.target.value)}
               value={confirmPassword}
               required
             ></Input>
-          </div>
+            {eyeReturn(eyeConfir, setEyeConfir)}
+          </BoxInput>
+
           <Button disabled={disabledButton} type="submit">
             {disabledButton ? <LoadSimbol /> : "Cadastrar"}
           </Button>
@@ -120,4 +161,3 @@ export default function SignUp() {
 export const Foto = styled(Button)`
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
 `;
-

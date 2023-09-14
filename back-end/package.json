@@ -5,6 +5,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
+    "test":"node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "start": "node src/index.js",
     "dev": "nodemon --legacy-watch src/index.js"
   },

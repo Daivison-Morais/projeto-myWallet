@@ -7,6 +7,8 @@ import UserContext from "./UserContext";
 import styled from "styled-components";
 import BASE_URL from "./services";
 import LoadSimbol from "./LoadSimbol";
+import { Input } from "./NewIn";
+import notify from "./cardNotify";
 
 export default function NewOut() {
   const { token } = useContext(UserContext);
@@ -20,7 +22,7 @@ export default function NewOut() {
     event.preventDefault();
 
     if (!token) {
-      alert("Você precisa estar logado para criar uma saída");
+      notify("Você precisa estar logado para criar uma saída");
       return navigate("/");
     }
 
@@ -28,10 +30,10 @@ export default function NewOut() {
 
     const body = {
       value: value > 0 ? value * -1 : value,
-      descricao: description,
+      description: description,
     };
 
-    if(body.descricao === "") body.descricao = "-";
+    if (body.description === "") body.description = "-";
 
     axios
       .post(`${BASE_URL}/newout`, body, config)
@@ -42,10 +44,10 @@ export default function NewOut() {
       })
       .catch((error) => {
         setDisabledButton(false);
-        if(error.response.data === undefined){
-          return alert("Tente novamnete mais tarde.")
-        }else alert(error.response.data.error);
-        navigate("/")
+        if (error.response.data === undefined) {
+          return notify("Tente novamnete mais tarde.");
+        } else notify(error.response.data.error);
+        navigate("/");
       });
   }
 
@@ -60,6 +62,7 @@ export default function NewOut() {
             <Input
               placeholder="Descrição"
               type="text"
+              autoFocus={true}
               value={description}
               onChange={(event) => setDescription(event.target.value)}
             ></Input>
@@ -69,7 +72,6 @@ export default function NewOut() {
             <Input
               placeholder="Valor"
               type="number"
-              autoFocus={true}
               step="0.01"
               value={value}
               onChange={(event) => setValue(event.target.value)}
@@ -98,16 +100,6 @@ export const Button = styled.button`
   box-sizing: border-box;
   cursor: pointer;
   border-style: hidden;
-`;
-
-export const Input = styled.input`
-  width: 100%;
-  height: 58px;
-  margin-bottom: 13px;
-  font-size: 20px;
-  color: #262626;
-  padding-left: 8px;
-  border-radius: 5px;
 `;
 
 export const Top = styled.div`

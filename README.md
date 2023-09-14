@@ -3,6 +3,10 @@
 <br>
 <img alt="myWallet" src="https://media.discordapp.net/attachments/1068625823613067355/1101276669618163783/myWallet.png"/>
 
+## deploy
+
+https://mywallet-ruby.vercel.app/
+
 # Para rodar:
 
 Clone o repositório.
@@ -11,10 +15,9 @@ no arquivo back-end, crie um arquivo .env como descrito no arquivo .env.example
 
 Na raíz do projeto rode: docker compose up -d
 
-Abra o front-end copiando na barra de endereços do navegador: localhost:8081
+na raiz do front-end rode, npm start.
+
+Pronto, começe a codar!
 
 
-## deploy
-
-https://projeto13-mywallet-front-two-gamma.vercel.app/
 

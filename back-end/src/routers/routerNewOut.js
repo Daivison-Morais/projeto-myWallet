@@ -1,9 +1,10 @@
 import {Router} from "express";
 import { controllerNewOut } from "../controllers/controllerNewOut.js";
+import { authenticated } from "../middlewares/authentication.js";
 
 const routerNewOut = Router();
 
 routerNewOut
-.post("/", controllerNewOut);
+.post("/", authenticated, controllerNewOut);
 
 export default routerNewOut;

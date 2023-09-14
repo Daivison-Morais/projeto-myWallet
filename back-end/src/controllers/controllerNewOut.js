@@ -2,18 +2,14 @@ import { serviceNewOut } from "../services/serviceNewOut.js";
 
 export async function controllerNewOut(req, res) {
   const body = req.body;
-  let authorization = req.headers.authorization;
+  const { session } = req;
 
   try {
-    await serviceNewOut(body, authorization);
+    await serviceNewOut(body, session);
     res.sendStatus(201);
   } catch (error) {
     if (error.name === "UnauthorizedError") {
       return res.status(401).send({ error: error.message });
-    }
-
-    if (error.name === 'TokenExpiredError') {
-      return res.status(401).send({ error: "A sessão foi encerrada." });
     }
     
     if (error.name === "ConflictError") {

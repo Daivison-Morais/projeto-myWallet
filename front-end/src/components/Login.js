@@ -6,20 +6,16 @@ import axios from "axios";
 import BASE_URL from "./services";
 import LoadSimbol from "./LoadSimbol";
 import { useMutation } from "react-query";
+import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+import notify from "./cardNotify";
 
 export default function Login() {
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [password, setPassword] = useState("");
+  const [eye, setEye] = useState(false);
   const [disabledButton, setDisabledButton] = useState(false);
+  const { setToken, setUser } = useContext(UserContext);
   const navigate = useNavigate();
-
-  const { setToken } = useContext(UserContext);
-  const { setUser } = useContext(UserContext);
-
-  const body = {
-    email: email,
-    password: senha,
-  };
 
   const mutation = useMutation({
     mutationFn: async ({ BASE_URL, body }) => {
@@ -33,10 +29,10 @@ export default function Login() {
         })
         .catch((error) => {
           setDisabledButton(false);
-          if(error.response.data === undefined){
-            return alert("Tente novamnete mais tarde.")
+          if (error.response.data === undefined) {
+            return notify("Tente novamnete mais tarde.");
           }
-          alert(error.response.data.error);
+          notify(error.response.data.error);
         });
     },
   });
@@ -44,9 +40,48 @@ export default function Login() {
   function handleForm(event) {
     event.preventDefault();
 
+    const body = {
+      email: email,
+      password: password,
+    };
+
     setDisabledButton(true);
 
     mutation.mutate({ BASE_URL: BASE_URL, body: body });
+  }
+
+  function eyeReturn(eye) {
+    return eye ? (
+      <AiOutlineEyeInvisible
+        onClick={() => {
+          setEye(!eye);
+        }}
+        style={{
+          position: "absolute",
+          top: "37%",
+          right: "13px",
+          width: "24px",
+          height: "24px",
+          color: "#898989",
+          cursor: "pointer",
+        }}
+      />
+    ) : (
+      <AiOutlineEye
+        onClick={() => {
+          setEye(!eye);
+        }}
+        style={{
+          position: "absolute",
+          top: "37%",
+          right: "13px",
+          width: "24px",
+          height: "24px",
+          color: "#898989",
+          cursor: "pointer",
+        }}
+      />
+    );
   }
 
   return (
@@ -65,15 +100,16 @@ export default function Login() {
             ></Input>
           </div>
 
-          <div>
+          <BoxInput>
             <Input
               placeholder="Senha"
-              type="password"
-              value={senha}
-              onChange={(event) => setSenha(event.target.value)}
+              type={eye ? "text" : "password"}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
               required
             ></Input>
-          </div>
+            {eyeReturn(eye)}
+          </BoxInput>
 
           <Button disabled={disabledButton} type="submit">
             {disabledButton ? <LoadSimbol /> : "Entrar"}
@@ -132,14 +168,20 @@ export const Foto = styled.img`
   margin-bottom: 32px;
 `;
 
+export const BoxInput = styled.div`
+  position: relative;
+`;
+
 export const Input = styled.input`
   width: 85vw;
-  height: 58px;
-  margin-bottom: 13px;
+  height: 56px;
   font-size: 20px;
+  outline: none;
+  margin: 8px 0;
   color: #262626;
   padding-left: 8px;
   border-radius: 5px;
+  border-style: none;
 `;
 
 export const Container = styled.div`

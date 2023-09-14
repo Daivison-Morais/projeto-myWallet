@@ -29,10 +29,10 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
       return axios.delete(`${BASE_URL}/delete/all`, config);
     },
     onError: (error) => {
-      if(error.response.data === undefined){
-        return alert("Tente novamnete mais tarde.")
-      }else alert(error.response.data.error);
-      navigate("/")
+      if (error.response.data === undefined) {
+        return alert("Tente novamnete mais tarde.");
+      } else alert(error.response.data.error);
+      navigate("/");
     },
     onSuccess: () => {
       setClick(false);
@@ -42,7 +42,6 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
   });
 
   const balanceMonth = data.reduce((acc, value) => {
-    
     saldo += Number(value.value.toLocaleString("pt-BR"));
     if (value.in === "true") {
       totalIn += Number(value.value);
@@ -163,11 +162,11 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
                 <Line></Line>
               </Center>
               <TopicReport>
-                <TextSidebar>Total de saídas: </TextSidebar>
+                <TextSidebar>Total em saídas: </TextSidebar>
                 <Value>{totalOut.toLocaleString("pt-BR")}</Value>
               </TopicReport>
               <TopicReport>
-                <TextSidebar>Total de entradas: </TextSidebar>{" "}
+                <TextSidebar>Total em entradas: </TextSidebar>{" "}
                 {totalIn.toLocaleString("pt-BR")}
               </TopicReport>
               <TopicReport>
@@ -195,16 +194,34 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
                 <TextSidebar>Menor saldo: </TextSidebar>
                 <Value>{lowMonth}</Value>
               </TopicReport>
-
+              
               <Center>
-                <TextSidebar>saldo por Mês</TextSidebar>
+                <TextSidebar>Entrada - saída por Mês</TextSidebar>
                 <Line></Line>
               </Center>
-              {listMonth.map(({ mounth, balance }) => {
+              {listMonth.map(({ mounth, balance }, index) => {
                 return (
-                  <TopicReport>
+                  <TopicReport key={index}>
                     <TextSidebar>{mounth} </TextSidebar>
                     <Value>{balance}</Value>
+                  </TopicReport>
+                );
+              })}
+              <Center>
+                <TextSidebar>Saldo por Mês</TextSidebar>
+                <Line></Line>
+              </Center>
+              {listMonth.map(({ mounth, balance }, index) => {
+                console.log(listMonth);
+                let previousBalances = 0;
+                for (let i = index + 1; i <= listMonth.length - 1; i++) {
+                  previousBalances += Number(listMonth[i].balance);
+                  console.log("previousBalances:  ", previousBalances);
+                }
+                return (
+                  <TopicReport key={index}>
+                    <TextSidebar>{mounth} </TextSidebar>
+                    <Value>{balance + previousBalances}</Value>
                   </TopicReport>
                 );
               })}
@@ -242,7 +259,7 @@ const TopicReport = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin: 2px;
+  margin: 4px 2px;
   color: white;
   font-size: 15px;
 `;
@@ -251,14 +268,16 @@ const ReportContainer = styled.div`
   display: ${({ openReport }) => (openReport ? "flex" : "none")};
   flex-direction: column;
   background-color: #a328d6;
+
   margin-top: 7px;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+  overflow-y: scroll;
+  overflow-x: hidden;
   background-color: #a328d6;
   border-radius: 5px;
-  padding: 5px;
+  padding: 9px;
 `;
 
 export const ConfirmationBox = styled.div`
@@ -271,7 +290,7 @@ export const ConfirmationBox = styled.div`
   min-width: 128px;
   padding: 5px;
   margin: 5px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   background-color: #a328d6;
   border-radius: 5px;
 `;
@@ -316,16 +335,16 @@ const Justify = styled.div`
 const TopicSidebar = styled.div`
   color: white;
   display: flex;
+  min-height: 44px;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  min-height: 40px;
   margin: 5px;
   background-color: #8510b5;
   cursor: pointer;
   border-radius: 8px;
   padding: 7px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 `;
 
 const Container = styled.div`
@@ -333,7 +352,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: space-between;
-  width: 66%;
+  width: 70%;
   height: 98%;
   background-color: #a328d6;
   border: 1px solid white;

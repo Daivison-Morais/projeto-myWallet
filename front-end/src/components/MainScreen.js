@@ -10,48 +10,40 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import LoadSimbol from "./LoadSimbol";
 import SideBar from "./SideBar";
 import { useQuery } from "react-query";
+import notify from "./cardNotify";
 
 export default function MainScreen() {
-  const { token, user } = useContext(UserContext);
+  const { setToken, token, user } = useContext(UserContext);
   const [onSidebar, setOnsidebar] = useState(false);
 
-  const config = { headers: { Authorization: `Bearer ${token}` } };
   const navigate = useNavigate();
 
-  const { data, isLoading, error } = useQuery(
-    "Transactions",
-    async () => {
-      return await axios
-        .get(`${BASE_URL}/transactions`, config)
-        .then((response) => response.data.reverse());
-    },
-    {
-      retry: 2,
-    }
-  );
+  const config = { headers: { Authorization: `Bearer ${token}` } };
+
+  const { data, isLoading } = useQuery("Transactions", async () => {
+    return await axios
+      .get(`${BASE_URL}/transactions`, config)
+      .then((response) => response.data.reverse())
+      .catch((error) => {
+        if (error.response.data === undefined) {
+          return notify("Tente novamnete mais tarde.");
+        }
+        setToken("");
+        notify(error.response.data.error);
+        navigate("/");
+      });
+  });
 
   if (isLoading) return <LoadSimbol />;
 
-  if (error) {
-    if (token === "") {
-     navigate("/");
-     return alert("Você precisa fazer login novamente");
-    }
-    
-    if(error.response.data === undefined){
-      return alert("Tente novamnete mais tarde.")
-    }else alert(error.response.data.error);
-    navigate("/")
-  };
-
   let resultValue = 0;
-  if (data[0] !== "none") {
-    data.map((saldo) => (resultValue += Number(saldo.value)));
+  if (data?.[0] !== "none") {
+    data?.map((saldo) => (resultValue += Number(saldo.value)));
   }
 
   function infoReLogin() {
     if (!token) {
-      alert("Você precisa estar logado para criar uma saída");
+      notify("Você precisa estar logado para criar uma saída");
       return navigate("/");
     }
   }
@@ -61,13 +53,18 @@ export default function MainScreen() {
       <Container>
         {onSidebar ? (
           <>
-          <SideBar 
-          setOnsidebar={setOnsidebar} 
-          onSidebar={onSidebar} 
-          data={data}/>
-          <Div onSidebar={onSidebar} onClick={()=>{setOnsidebar(false)}}></Div>
+            <SideBar
+              setOnsidebar={setOnsidebar}
+              onSidebar={onSidebar}
+              data={data}
+            />
+            <Div
+              onSidebar={onSidebar}
+              onClick={() => {
+                setOnsidebar(false);
+              }}
+            ></Div>
           </>
-          
         ) : (
           ""
         )}
@@ -84,17 +81,17 @@ export default function MainScreen() {
           />
         </Top>
         <Main>
-          {data[0] === "none" ? (
+          {data?.[0] === "none" ? (
             <LoadSimbol />
-          ) : data.length !== 0 ? (
-            data.map((value) => (
+          ) : data?.length !== 0 ? (
+            data?.map((value) => (
               <BlocoAnotation key={value._id} value={value.in}>
                 <Date>{value.date}</Date>
-                <Description>{value.descricao}</Description>
+                <Description>{value.description}</Description>
                 <Value>
-                    {Number(value.value).toLocaleString("pt-BR", {
-                      maximumFractionDigits: 2,
-                    })}
+                  {Number(value.value).toLocaleString("pt-BR", {
+                    maximumFractionDigits: 2,
+                  })}
                 </Value>
               </BlocoAnotation>
             ))
@@ -105,11 +102,12 @@ export default function MainScreen() {
           )}
         </Main>
         <Saldo value={resultValue}>
-          Saldo: {resultValue.toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}{" "}
-            R$
+          Saldo:{" "}
+          {resultValue.toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}{" "}
+          R$
         </Saldo>
 
         <Footer>
@@ -136,12 +134,12 @@ export default function MainScreen() {
 }
 
 const Div = styled.div`
-position: absolute;
-width: 32%;
-height: 100%;
-top: 0px;
-right: 0px;
-z-index: ${({onSidebar})=> onSidebar ? "5" : "-2"};
+  position: absolute;
+  width: 32%;
+  height: 100%;
+  top: 0px;
+  right: 0px;
+  z-index: ${({ onSidebar }) => (onSidebar ? "5" : "-2")};
 `;
 
 export const Saldo = styled.div`
@@ -150,11 +148,12 @@ export const Saldo = styled.div`
   justify-content: center;
   border-radius: 5px;
   font-size: 20px;
-  height: 20px;
+  min-height: 20px;
   padding: 15px 5px;
   margin-top: 6px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  color: ${({ value }) => (value === "true" || value >= 0 ? "#00B47A" : "#FF6666")};
+  color: ${({ value }) =>
+    value === "true" || value >= 0 ? "#00B47A" : "#FF6666"};
   margin-bottom: 10px;
   background-color: #eff3f3;
 `;
@@ -165,7 +164,8 @@ export const BlocoAnotation = styled.div`
   justify-content: space-between;
   word-wrap: break-word;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  color: ${({ value }) => (value === "true" || value >= 0 ? "#00B47A" : "#FF6666")};
+  color: ${({ value }) =>
+    value === "true" || value >= 0 ? "#00B47A" : "#FF6666"};
   border-radius: 5px;
   margin: 6px 4px;
   padding: 4px;

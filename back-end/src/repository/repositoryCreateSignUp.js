@@ -6,7 +6,7 @@ export async function repositoryCreateSignUp (passwordEncrypted, email, name) {
         name,
         email,
         password: passwordEncrypted,
-      });
+      }); 
 }
 
 export async function findEmail (email) {

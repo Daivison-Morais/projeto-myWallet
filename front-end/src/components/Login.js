@@ -17,7 +17,10 @@ export default function Login() {
   const { setToken, setRefreshToken, setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
+
+
   const mutation = useMutation({
+  
     mutationFn: async ({ BASE_URL, body }) => {
       return await axios
         .post(`${BASE_URL}/sign-in`, body)
@@ -40,6 +43,12 @@ export default function Login() {
         });
     },
   });
+
+  if(localStorage.getItem("newRT")) {
+    setToken(localStorage.getItem("newRT"));
+    navigate("/mainScreen");
+    return;
+ }
 
   function handleForm(event) {
     event.preventDefault();

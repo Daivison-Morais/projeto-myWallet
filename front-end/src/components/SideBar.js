@@ -132,7 +132,7 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
 
         <TopicSidebar
           onClick={() => {
-            setToken("");
+            localStorage.setItem("newRT", "")
             navigate("/");
           }}
         >
@@ -259,7 +259,7 @@ const TopicReport = styled.div`
   width: 100%;
   margin: 4px 2px;
   color: white;
-  font-size: 18px;
+  font-size: 17px;
 `;
 
 const ReportContainer = styled.div`
@@ -357,7 +357,7 @@ const Container = styled.div`
   max-width: 380px;
   border-radius: 8px;
   padding: 6px;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 600;
   top: 5px;
   left: 5px;

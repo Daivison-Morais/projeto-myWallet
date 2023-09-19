@@ -2,8 +2,9 @@ import conflictError from "../errors/conflitError.js";
 import { findEmail } from "../repository/repositoryCreateSignUp.js";
 import { createSession } from "../repository/repositorySigIn.js";
 import { postSigninSchema } from "../schemas/allSchemas.js";
+import { repositoryRefreshToken } from "../repository/reposytoryRefreshToken.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { generateToken } from "../provider/generateTokenProvider.js";
 
 export async function serviceSignIn(body) {
   const validation = postSigninSchema.validate(body, { abortEarly: false });
@@ -18,11 +19,11 @@ export async function serviceSignIn(body) {
   const isValid = bcrypt.compareSync(body.password, ExistsUser.password);
   if (!isValid) throw conflictError("email e/ou senha errados");
   
-  const token = jwt.sign({}, process.env.JWT_SECRET, { 
-    subject: toString(ExistsUser._id),
-    expiresIn: 60*60*24*10 });
+  const token = await generateToken(ExistsUser._id);
 
   await createSession(token, ExistsUser._id);
 
-  return { token, user: ExistsUser.name };
+  const refreshToken = await repositoryRefreshToken(ExistsUser._id, ExistsUser.name);
+
+  return { token, refreshToken, user: ExistsUser.name };
 }

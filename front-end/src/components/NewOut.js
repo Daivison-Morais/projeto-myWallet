@@ -15,16 +15,15 @@ export default function NewOut() {
   const [value, setValue] = useState("");
   const [description, setDescription] = useState("");
   const [disabledButton, setDisabledButton] = useState(false);
-  const config = { headers: { Authorization: `Bearer ${token}` } };
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token || localStorage.getItem("newRT")}`,
+    },
+  };
   const navigate = useNavigate();
 
   function handleForm(event) {
     event.preventDefault();
-
-    if (!token) {
-      notify("Você precisa estar logado para criar uma saída");
-      return navigate("/");
-    }
 
     setDisabledButton(true);
 

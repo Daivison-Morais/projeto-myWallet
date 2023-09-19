@@ -11,7 +11,10 @@ import UserContext from "./UserContext";
 
 function App() {
   const [user, setUser] = useState("");
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(localStorage.getItem("newTR"));
+  const [refreshToken, setRefreshToken] = useState(
+    localStorage.getItem("random")
+  );
 
   return (
     <>
@@ -23,6 +26,8 @@ function App() {
             setToken,
             user,
             setUser,
+            setRefreshToken,
+            refreshToken,
           }}
         >
           <Routes>

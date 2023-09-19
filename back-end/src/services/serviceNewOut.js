@@ -1,10 +1,7 @@
 import conflictError from "../errors/conflitError.js";
 import unauthorizedError from "../errors/unauthorized-error.js";
-import {
-  createTransaction,
-  findSession,
-  findUser,
-} from "../repository/repositoryNewOut.js";
+import { findUser } from "../repository/repositoryNewIn.js";
+import { createTransaction } from "../repository/repositoryNewOut.js";
 import { schemaTransactions } from "../schemas/allSchemas.js";
 
 export async function serviceNewOut(body, session) {

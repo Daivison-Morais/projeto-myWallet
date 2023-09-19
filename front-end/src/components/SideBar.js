@@ -42,7 +42,7 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
   });
 
   const balanceMonth = data.reduce((acc, value) => {
-    saldo += Number(value.value.toLocaleString("pt-BR"));
+    saldo += Number(value.value);
     if (value.in === "true") {
       totalIn += Number(value.value);
       if (Number(value.value) > higherEntryValue)
@@ -196,14 +196,14 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
               </TopicReport>
               
               <Center>
-                <TextSidebar>Entrada - saída por Mês</TextSidebar>
+                <TextSidebar>Entrada-Saída por Mês</TextSidebar>
                 <Line></Line>
               </Center>
               {listMonth.map(({ mounth, balance }, index) => {
                 return (
                   <TopicReport key={index}>
                     <TextSidebar>{mounth} </TextSidebar>
-                    <Value>{balance}</Value>
+                    <Value>{balance.toLocaleString("pt-BR")}</Value>
                   </TopicReport>
                 );
               })}
@@ -219,7 +219,7 @@ export default function SideBar({ setOnsidebar, onSidebar, data }) {
                 return (
                   <TopicReport key={index}>
                     <TextSidebar>{mounth} </TextSidebar>
-                    <Value>{balance + previousBalances}</Value>
+                    <Value>{(balance + previousBalances).toLocaleString("pt-BR")}</Value>
                   </TopicReport>
                 );
               })}
@@ -259,14 +259,13 @@ const TopicReport = styled.div`
   width: 100%;
   margin: 4px 2px;
   color: white;
-  font-size: 15px;
+  font-size: 18px;
 `;
 
 const ReportContainer = styled.div`
   display: ${({ openReport }) => (openReport ? "flex" : "none")};
   flex-direction: column;
   background-color: #a328d6;
-
   margin-top: 7px;
   align-items: center;
   justify-content: space-between;
@@ -278,23 +277,10 @@ const ReportContainer = styled.div`
   padding: 9px;
 `;
 
-export const ConfirmationBox = styled.div`
+export const Span = styled.span`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
   width: 100%;
-  max-width: 250px;
-  min-width: 128px;
-  padding: 5px;
-  margin: 5px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  background-color: #a328d6;
-  border-radius: 5px;
-`;
-
-export const Span = styled.div`
-  display: flex;
+  justify-content: space-around;
 `;
 export const TextBox = styled.div`
   display: flex;
@@ -310,14 +296,28 @@ export const BoxButtons = styled.span`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  width: 16vw;
-  max-width: 50px;
+  width: 49%;
   height: 7vh;
   margin: 5px;
   color: white;
   cursor: pointer;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   background-color: #8c11be;
+  border-radius: 5px;
+`;
+
+export const ConfirmationBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 250px;
+  min-width: 128px;
+  padding: 5px;
+  margin: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  background-color: #a328d6;
   border-radius: 5px;
 `;
 
@@ -350,13 +350,15 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: space-between;
-  width: 70%;
+  width: 78%;
   height: 98%;
   background-color: #a328d6;
   border: 1px solid white;
-  max-width: 300px;
+  max-width: 380px;
   border-radius: 8px;
   padding: 6px;
+  font-size: 22px;
+  font-weight: 600;
   top: 5px;
   left: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);

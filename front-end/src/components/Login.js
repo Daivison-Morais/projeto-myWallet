@@ -14,7 +14,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [eye, setEye] = useState(false);
   const [disabledButton, setDisabledButton] = useState(false);
-  const { setToken, setUser } = useContext(UserContext);
+  const { setToken, setRefreshToken, setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const mutation = useMutation({
@@ -22,7 +22,11 @@ export default function Login() {
       return await axios
         .post(`${BASE_URL}/sign-in`, body)
         .then((response) => {
+          setRefreshToken(response.data.refreshToken._id);
           setToken(response.data.token);
+          localStorage.setItem("refresh", response.data.refreshToken._id);
+          localStorage.setItem("name", response.data.refreshToken.name);
+
           setUser(response.data.user);
           setDisabledButton(false);
           navigate("/mainScreen");
@@ -150,6 +154,7 @@ export const Button = styled.button`
   justify-content: center;
   align-items: center;
   width: 85vw;
+  max-width: 600px;
   height: 45px;
   background-color: #a328d6;
   border-radius: 5px;
@@ -174,6 +179,7 @@ export const BoxInput = styled.div`
 
 export const Input = styled.input`
   width: 85vw;
+  max-width: 600px;
   height: 56px;
   font-size: 20px;
   outline: none;

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import mais from "../assets/img/mais.png";
 import menos from "../assets/img/menos.png";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import UserContext from "./UserContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -13,12 +13,38 @@ import { useQuery } from "react-query";
 import notify from "./cardNotify";
 
 export default function MainScreen() {
-  const { setToken, token, user } = useContext(UserContext);
+  const { setToken, token, refreshToken, user } = useContext(UserContext);
   const [onSidebar, setOnsidebar] = useState(false);
 
   const navigate = useNavigate();
 
-  const config = { headers: { Authorization: `Bearer ${token}` } };
+  if (!token) {
+    setToken(localStorage.getItem("newRT"));
+  }
+
+  useEffect(() => {
+    localStorage.setItem("random", refreshToken);
+
+    axios
+      .post(`${BASE_URL}/refresh-token`, {
+        refreshToken: localStorage.getItem("random"),
+      })
+      .then((response) => {
+        localStorage.setItem("newRT", response.data.token);
+      })
+      .catch((error) => {
+        if (error.response.data === undefined) {
+          return notify("Tente novamnete mais tarde.");
+        } else notify(error.response.data.error);
+        navigate("/");
+      });
+  }, []);
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token || localStorage.getItem("newRT")}`,
+    },
+  };
 
   const { data, isLoading } = useQuery("Transactions", async () => {
     return await axios
@@ -28,7 +54,7 @@ export default function MainScreen() {
         if (error.response.data === undefined) {
           return notify("Tente novamnete mais tarde.");
         }
-        setToken("");
+        setToken(localStorage.getItem("newTR"));
         notify(error.response.data.error);
         navigate("/");
       });
@@ -41,12 +67,7 @@ export default function MainScreen() {
     data?.map((saldo) => (resultValue += Number(saldo.value)));
   }
 
-  function infoReLogin() {
-    if (!token) {
-      notify("Você precisa estar logado para criar uma saída");
-      return navigate("/");
-    }
-  }
+  function infoReLogin() {}
 
   return (
     <>
@@ -69,7 +90,7 @@ export default function MainScreen() {
           ""
         )}
         <Top>
-          <TxtTop>Olá, {user}</TxtTop>
+          <TxtTop>Olá, {user || localStorage.getItem("name")}</TxtTop>
           <GiHamburgerMenu
             style={{
               color: "white",
@@ -175,7 +196,7 @@ export const Date = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 6px;
+  margin-left: 5px;
   font-size: 18px;
   font-weight: 400;
 `;
@@ -184,9 +205,9 @@ export const Value = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 20%;
   font-size: 18px;
   text-align: center;
+  margin-right: 5px;
   font-weight: 400;
 `;
 export const Description = styled.div`
@@ -229,6 +250,7 @@ export const Main = styled.div`
   border-radius: 5px;
   padding: 6px;
   overflow: scroll;
+  overflow-x: hidden;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   background-color: #eff3f3;
 `;
@@ -247,6 +269,7 @@ export const Buttons = styled.button`
   padding-left: 10px;
   cursor: pointer;
   border-width: 1px;
+  border-color: white;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   background-color: #a328d6;
   border-radius: 5px;

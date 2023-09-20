@@ -15,7 +15,7 @@ no arquivo back-end, crie um arquivo .env como descrito no arquivo .env.example
 
 Na raíz do projeto rode: docker compose up -d
 
-na raiz do front-end rode, npm start.
+na raiz do front-end rode, npm i e npm start.
 
 Pronto, começe a codar!
 
